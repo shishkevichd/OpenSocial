@@ -55,7 +55,7 @@ class AccountAPI:
                     return { "success": False, "why": errors[0] }, 400
             else:
                 return { "success": False, "why": errors[3] }, 403
-    def getUserByID(access_token, user_id=""):
+    def getUser(access_token, user_id=""):
         errors = [
             "incorrect_token",
             "user_not_found",

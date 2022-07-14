@@ -20,4 +20,4 @@ def AccountRegisterAPI():
 @AccountRoutesAPI.post('/getUser')
 def AccountGetUserAPI():
     params = request.json
-    return AccountAPI.getUserByID(params['access_token'], params['user_id'])
+    return AccountAPI.getUser(params['access_token'], params['user_id'])
