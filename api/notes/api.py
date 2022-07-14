@@ -1,5 +1,6 @@
 import sqlite3
 import secrets
+from tabnanny import check
 import time
 
 from click import edit
@@ -62,7 +63,7 @@ class NotesAPI:
             with sqlite3.connect('opensocial.db') as conn:
                 cursor = conn.cursor()
 
-                note_query = cursor.execute('SELECT content,date,note_id FROM Notes WHERE note_id = (?)', [note_id]).fetchone()
+                note_query = cursor.execute('SELECT content,date,note_id FROM Notes WHERE note_id = (?) AND creator = (?)', (note_id, checkTokenResult['id'])).fetchone()
 
                 if note_query != None: 
                     return { "status": True, "data": { "date": note_query[1], "content": note_query[0], "note_id": note_query[2] } }
