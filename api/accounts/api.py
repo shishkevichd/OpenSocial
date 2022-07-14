@@ -62,20 +62,20 @@ class AccountAPI:
             "user_banned"
         ]
 
-        if UtilitiesAPI.checkToken(access_token):
+        if UtilitiesAPI.checkToken(access_token)['validToken']:
             with sqlite3.connect('opensocial.db') as conn:
                 cursor = conn.cursor()
 
                 if user_id:
-                    result = cursor.execute('SELECT * FROM Accounts WHERE user_id = (?)', [user_id]).fetchone()
+                    result = cursor.execute('SELECT user_id FROM Accounts WHERE user_id = (?)', [user_id]).fetchone()
 
                     if result != None:
-                        return { "success": True, "data": { "first_name": result[3], "last_name": result[4], "status": result[5], "user_id": result[9] } }
+                        return { "success": True, "data": UtilitiesAPI.getUserJSON(result[0]) }
                     else:
                         return { "success": False, "why": errors[1] }, 403
                 else:
-                    result = cursor.execute('SELECT * FROM Accounts WHERE access_token = (?)', [access_token]).fetchone()
+                    result = cursor.execute('SELECT user_id FROM Accounts WHERE access_token = (?)', [access_token]).fetchone()
 
-                    return { "success": True, "data": { "first_name": result[3], "last_name": result[4], "status": result[5], "user_id": result[9] } }
+                    return { "success": True, "data": UtilitiesAPI.getUserJSON(result[0], additional=True) }
         else:
             return { "success": False, "why": errors[0] }, 403
