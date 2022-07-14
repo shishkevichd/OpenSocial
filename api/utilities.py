@@ -16,11 +16,23 @@ class UtilitiesAPI:
             account_status TEXT,
             access_token TEXT NOT NULL,
             phone_number INTEGER,
-            account_level TEXT DEFAULT 'user'
+            account_level TEXT DEFAULT 'user',
+            user_id TEXT NOT NULL
         )
         ''')
 
         conn.close()
+
+    def checkToken(access_token):
+        with sqlite3.connect('opensocial.db') as conn:
+            cursor = conn.cursor()
+            
+            result = cursor.execute('SELECT id FROM Accounts WHERE access_token = (?)', [access_token]).fetchone()
+
+            if result != None:
+                return True
+            else:
+                return False
     
     def password_check(password):     
         if len(password) < 6 or len(password) > 20 or not any(char.isdigit() for char in password):
