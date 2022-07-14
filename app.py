@@ -1,5 +1,6 @@
 from flask import Flask
 from api.main import MainAPI
+from api.database import DatabaseAPI
 
 
 # Init app
@@ -12,4 +13,5 @@ app.register_blueprint(MainAPI)
 
 # Start application
 if __name__ == '__main__':
+    DatabaseAPI.create_db()
     app.run(port=8000, debug=True)
