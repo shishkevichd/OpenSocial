@@ -82,13 +82,18 @@ class NotesAPI:
             with sqlite3.connect('opensocial.db') as conn:
                 cursor = conn.cursor()
 
-                if cursor.execute('SELECT id FROM Notes WHERE note_id = (?)', [note_id]).fetchone() != None:
-                    cursor.execute('UPDATE Notes SET content = (?), is_edited = TRUE WHERE note_id = (?) AND creator = (?)', (content, note_id, checkTokenResult['id']))
+                get_note_query = cursor.execute('SELECT id,creator FROM Notes WHERE note_id = (?)', [note_id]).fetchone()
 
-                    conn.commit()
-                    cursor.close()
+                if get_note_query != None:
+                    if get_note_query[1] == checkTokenResult['id']:
+                        cursor.execute('UPDATE Notes SET content = (?), is_edited = TRUE WHERE note_id = (?) AND creator = (?)', (content, note_id, checkTokenResult['id']))
 
-                    return { "status": True }
+                        conn.commit()
+                        cursor.close()
+
+                        return { "status": True }
+                    else:
+                        return { "status": False, "why": errors[1] }, 404 
                 else:
                     return { "status": False, "why": errors[1] }, 404 
         else:
@@ -105,13 +110,18 @@ class NotesAPI:
             with sqlite3.connect('opensocial.db') as conn:
                 cursor = conn.cursor()
 
-                if cursor.execute('SELECT id FROM Notes WHERE note_id = (?)', [note_id]).fetchone() != None:
-                    cursor.execute('DELETE FROM Notes WHERE note_id = (?)', [note_id])
+                get_note_query = cursor.execute('SELECT id,creator FROM Notes WHERE note_id = (?)', [note_id]).fetchone()
 
-                    conn.commit()
-                    cursor.close()
+                if get_note_query != None:
+                    if get_note_query[1] == checkTokenResult['id']:
+                        cursor.execute('DELETE FROM Notes WHERE note_id = (?)', [note_id])
 
-                    return { "status": True }
+                        conn.commit()
+                        cursor.close()
+
+                        return { "status": True }
+                    else:
+                        return { "status": False, "why": errors[1] }, 404 
                 else:
                     return { "status": False, "why": errors[1] }, 404 
         else:
