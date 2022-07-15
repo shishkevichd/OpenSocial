@@ -43,7 +43,7 @@ class AccountAPI:
                 if bool(re.search(email_regex, account_email)):
                     if UtilitiesAPI.password_check(account_password):
                         if len(first_name) > 2 and len(last_name) > 2:
-                            if gender == 0 or gender == 1:
+                            if gender == 0 or gender == 1 and type(gender) is int:
                                 result = cursor.execute('INSERT INTO Accounts (account_email, account_password, first_name, last_name, access_token, user_id, gender) VALUES (?,?,?,?,?,?,?) RETURNING access_token, user_id', (account_email, generate_password_hash(account_password), first_name, last_name, secrets.token_hex(20), secrets.token_hex(4), gender))
 
                                 new_user_access_token = result.fetchone()
