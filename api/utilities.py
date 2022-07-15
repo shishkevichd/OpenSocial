@@ -19,7 +19,7 @@ class UtilitiesAPI:
             account_level TEXT DEFAULT 'user',
             user_id TEXT NOT NULL,
             gender INTEGER,
-            birthday TEXT,
+            birthday TEXT
         );
 
         CREATE TABLE IF NOT EXISTS Notes (
