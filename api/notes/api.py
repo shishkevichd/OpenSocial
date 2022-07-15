@@ -3,6 +3,7 @@ import secrets
 import time
 
 from api.utilities import UtilitiesAPI
+from api.config import ConfigAPI
 
 
 class NotesAPI:
@@ -14,14 +15,14 @@ class NotesAPI:
         checkTokenResult = UtilitiesAPI.checkToken(access_token)
 
         if checkTokenResult['validToken']:
-            with sqlite3.connect('opensocial.db') as conn:
+            with sqlite3.connect(ConfigAPI.database) as conn:
                 cursor = conn.cursor()
 
                 new_note = cursor.execute('INSERT INTO Notes (content,date,note_id,creator) VALUES (?,?,?,?) RETURNING note_id', (content, time.time(), secrets.token_hex(8), checkTokenResult['id'])).fetchone()
 
                 return { "status": True, "data": { "note_id": new_note[0] } }
         else:
-            return { "status": False, "why": errors[0] }, 403
+            return UtilitiesAPI.errorJson(errors[0])
     def getNotes(access_token):
         errors = [
             "incorrect_token"
@@ -30,7 +31,7 @@ class NotesAPI:
         checkTokenResult = UtilitiesAPI.checkToken(access_token)
 
         if checkTokenResult['validToken']:
-            with sqlite3.connect('opensocial.db') as conn:
+            with sqlite3.connect(ConfigAPI.database) as conn:
                 cursor = conn.cursor()
 
                 notes_query = cursor.execute('SELECT content,date,note_id FROM Notes WHERE creator = (?) ORDER BY date DESC', [checkTokenResult['id']]).fetchall()
@@ -47,7 +48,7 @@ class NotesAPI:
 
                 return { "status": True, "data": notes_array }
         else:
-            return { "status": False, "why": errors[0] }, 403
+            return UtilitiesAPI.errorJson(errors[0])
     def getNote(access_token, note_id):
         errors = [
             "incorrect_token",
@@ -57,7 +58,7 @@ class NotesAPI:
         checkTokenResult = UtilitiesAPI.checkToken(access_token)
 
         if checkTokenResult['validToken']:
-            with sqlite3.connect('opensocial.db') as conn:
+            with sqlite3.connect(ConfigAPI.database) as conn:
                 cursor = conn.cursor()
 
                 note_query = cursor.execute('SELECT content,date,note_id FROM Notes WHERE note_id = (?) AND creator = (?)', (note_id, checkTokenResult['id'])).fetchone()
@@ -65,9 +66,9 @@ class NotesAPI:
                 if note_query != None: 
                     return { "status": True, "data": { "date": note_query[1], "content": note_query[0], "note_id": note_query[2] } }
                 else:
-                    return { "status": False, "why": errors[1] }, 404
+                    return UtilitiesAPI.errorJson(errors[1])
         else:
-            return { "status": False, "why": errors[0] }, 403
+            return UtilitiesAPI.errorJson(errors[0])
     def editNote(access_token, note_id, content):
         errors = [
             "incorrect_token",
@@ -77,7 +78,7 @@ class NotesAPI:
         checkTokenResult = UtilitiesAPI.checkToken(access_token)
 
         if checkTokenResult['validToken']:
-            with sqlite3.connect('opensocial.db') as conn:
+            with sqlite3.connect(ConfigAPI.database) as conn:
                 cursor = conn.cursor()
 
                 get_note_query = cursor.execute('SELECT id,creator FROM Notes WHERE note_id = (?)', [note_id]).fetchone()
@@ -91,11 +92,11 @@ class NotesAPI:
 
                         return { "status": True }
                     else:
-                        return { "status": False, "why": errors[1] }, 404 
+                        return UtilitiesAPI.errorJson(errors[1])
                 else:
-                    return { "status": False, "why": errors[1] }, 404 
+                    return UtilitiesAPI.errorJson(errors[1])
         else:
-            return { "status": False, "why": errors[0] }, 403
+            return UtilitiesAPI.errorJson(errors[0])
     def deleteNote(access_token, note_id):
         errors = [
             "incorrect_token",
@@ -105,7 +106,7 @@ class NotesAPI:
         checkTokenResult = UtilitiesAPI.checkToken(access_token)
 
         if checkTokenResult['validToken']:
-            with sqlite3.connect('opensocial.db') as conn:
+            with sqlite3.connect(ConfigAPI.database) as conn:
                 cursor = conn.cursor()
 
                 get_note_query = cursor.execute('SELECT id,creator FROM Notes WHERE note_id = (?)', [note_id]).fetchone()
@@ -119,8 +120,8 @@ class NotesAPI:
 
                         return { "status": True }
                     else:
-                        return { "status": False, "why": errors[1] }, 404 
+                        return UtilitiesAPI.errorJson(errors[1])
                 else:
-                    return { "status": False, "why": errors[1] }, 404 
+                    return UtilitiesAPI.errorJson(errors[1])
         else:
-            return { "status": False, "why": errors[0] }, 403
+            return UtilitiesAPI.errorJson(errors[0])

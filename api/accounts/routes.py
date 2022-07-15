@@ -21,3 +21,27 @@ def AccountRegisterAPI():
 def AccountGetUserAPI():
     params = request.json
     return AccountAPI.getUser(params['access_token'], params['user_id'])
+
+
+@AccountRoutesAPI.post('/sendFriendRequest')
+def AccountSendFriendRequestAPI():
+    params = request.json
+    return AccountAPI.sendFriendRequest(params['access_token'], params['user_id'])
+
+
+@AccountRoutesAPI.post('/acceptFriendRequest')
+def AccountAcceptFriendRequestAPI():
+    params = request.json
+    return AccountAPI.acceptFriendRequest(params['access_token'], params['user_id'])
+
+
+@AccountRoutesAPI.post('/declineFriendRequest')
+def AccountDeclineFriendRequestAPI():
+    params = request.json
+    return AccountAPI.declineFriendRequest(params['access_token'], params['user_id'])
+
+
+@AccountRoutesAPI.post('/deleteFriend')
+def AccountDeleteFrienAPI():
+    params = request.json
+    return AccountAPI.deleteFriend(params['access_token'], params['user_id'])
