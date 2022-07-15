@@ -23,11 +23,12 @@ class AccountAPI:
                     return { "success": True, "data": { "access_token": result[0], "user_id": result[2] } }
                 else:
                     return { "success": False, "why": errors[0] }, 403
-    def register(account_email, account_password, first_name, last_name):
+    def register(account_email, account_password, first_name, last_name, gender):
         errors = [
             "incorrect_account_email",
             "incorrect_account_password",
             "incorrect_first_and_last_name",
+            "incorrect_gender",
             "this_mail_already_exists"
         ]
 
@@ -42,11 +43,14 @@ class AccountAPI:
                 if bool(re.search(email_regex, account_email)):
                     if UtilitiesAPI.password_check(account_password):
                         if len(first_name) > 2 and len(last_name) > 2:
-                            result = cursor.execute('INSERT INTO Accounts (account_email, account_password, first_name, last_name, access_token, user_id) VALUES (?,?,?,?,?,?) RETURNING access_token, user_id', (account_email, generate_password_hash(account_password), first_name, last_name, secrets.token_hex(20), secrets.token_hex(4)))
+                            if gender == 0 or gender == 1:
+                                result = cursor.execute('INSERT INTO Accounts (account_email, account_password, first_name, last_name, access_token, user_id, gender) VALUES (?,?,?,?,?,?,?) RETURNING access_token, user_id', (account_email, generate_password_hash(account_password), first_name, last_name, secrets.token_hex(20), secrets.token_hex(4), gender))
 
-                            new_user_access_token = result.fetchone()
+                                new_user_access_token = result.fetchone()
 
-                            return { "success": True, "data": { "access_token": new_user_access_token[0], "user_id": new_user_access_token[1] } }
+                                return { "success": True, "data": { "access_token": new_user_access_token[0], "user_id": new_user_access_token[1] } }
+                            else:
+                                return { "success": False, "why": errors[4] }, 400
                         else:
                             return { "success": False, "why": errors[2] }, 400
                     else:

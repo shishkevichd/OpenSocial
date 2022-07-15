@@ -17,7 +17,9 @@ class UtilitiesAPI:
             access_token TEXT NOT NULL,
             phone_number INTEGER,
             account_level TEXT DEFAULT 'user',
-            user_id TEXT NOT NULL
+            user_id TEXT NOT NULL,
+            gender INTEGER,
+            birthday TEXT,
         );
 
         CREATE TABLE IF NOT EXISTS Notes (
@@ -52,9 +54,9 @@ class UtilitiesAPI:
 
             if result != None:
                 if additional:
-                    return { "first_name": result[3], "last_name": result[4], "status": result[5], "user_id": result[9], "phone_number": result[7] }
+                    return { "first_name": result[3], "last_name": result[4], "status": result[5], "user_id": result[9], "phone_number": result[7], "gender": result[10] }
                 else:
-                    return { "first_name": result[3], "last_name": result[4], "status": result[5], "user_id": result[9] }
+                    return { "first_name": result[3], "last_name": result[4], "status": result[5], "user_id": result[9], "gender": result[10] }
             else:
                 return None
     
