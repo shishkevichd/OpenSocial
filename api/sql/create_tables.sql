@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS Accounts (
     user_id Varchar(10) NOT NULL,
     gender INTEGER NOT NULL,
     birthday TEXT,
-    create_time TEXT NOT NULL
+    create_date INTEGER NOT NULL
 );
 
 -- Notes
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS Friends (
 -- Groups
 CREATE TABLE IF NOT EXISTS Groups (
     id INTEGER PRIMARY KEY,
-    create_time TEXT NOT NULL,
+    create_time INTEGER NOT NULL,
     group_id TEXT NOT NULL,
     group_name Varchar(100) NOT NULL,
     group_status Varchar(250) NOT NULL, 
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS Groups (
 
 -- Subscribers (for groups)
 CREATE TABLE IF NOT EXISTS Subscribers (
-    id INTEGER PRIMARY KEY
+    id INTEGER PRIMARY KEY,
     subscriber INTEGER NOT NULL,
     subscribed_at INTEGER NOT NULL,
     subscriber_rank INTEGER NOT NULL DEFAULT 0,
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS Subscribers (
 -- Posts
 CREATE TABLE IF NOT EXISTS Posts (
     id INTEGER PRIMARY KEY,
-    create_date TEXT NOT NULL,
+    create_date INTEGER NOT NULL,
     post_id TEXT NOT NULL,
     content TEXT NOT NULL,
     group_creator INTEGER,
@@ -66,3 +66,13 @@ CREATE TABLE IF NOT EXISTS Posts (
     FOREIGN KEY(user) REFERENCES Accounts(id),
     FOREIGN KEY(group_creator) REFERENCES Groups(id)
 );
+
+-- Likes
+CREATE TABLE IF NOT EXISTS Likes (
+    id INTEGER PRIMARY KEY,
+    liked_post INTEGER NOT NULL,
+    liked_user INTEGER NOT NULL,
+    like_date INTEGER NOT NULL,
+    FOREIGN KEY(liked_user) REFERENCES Accounts(id),
+    FOREIGN KEY(liked_post) REFERENCES Posts(post_id)
+)

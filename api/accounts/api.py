@@ -1,10 +1,10 @@
 import re
 import secrets
+import time
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from api.utilities import UtilitiesAPI
 from api.config import ConfigAPI
-from datetime import datetime
 
 class AccountAPI:
     def login(account_email, account_password):
@@ -46,8 +46,8 @@ class AccountAPI:
                         if len(first_name) > 2 and len(last_name) > 2:
                             if int(gender) == 1 or int(gender) == 2:
                                 result = cursor.execute(
-                                    'INSERT INTO Accounts (account_email, account_password, first_name, last_name, access_token, user_id, gender, create_time) VALUES (?,?,?,?,?,?,?,?) RETURNING access_token, user_id', 
-                                    (account_email, generate_password_hash(account_password), first_name, last_name, secrets.token_hex(20), secrets.token_hex(4), int(gender), str(datetime.utcnow()))
+                                    'INSERT INTO Accounts (account_email, account_password, first_name, last_name, access_token, user_id, gender, create_date) VALUES (?,?,?,?,?,?,?,?) RETURNING access_token, user_id', 
+                                    (account_email, generate_password_hash(account_password), first_name, last_name, secrets.token_hex(20), secrets.token_hex(4), int(gender), time.time())
                                 )
 
                                 new_user_access_token = result.fetchone()
