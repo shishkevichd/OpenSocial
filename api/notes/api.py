@@ -1,4 +1,3 @@
-import sqlite3
 import secrets
 import time
 
@@ -15,7 +14,7 @@ class NotesAPI:
         checkTokenResult = UtilitiesAPI.checkToken(access_token)
 
         if checkTokenResult['validToken']:
-            with sqlite3.connect(ConfigAPI.database) as conn:
+            with UtilitiesAPI.connectdb(ConfigAPI.new_database) as conn:
                 cursor = conn.cursor()
 
                 new_note = cursor.execute('INSERT INTO Notes (content,date,note_id,creator) VALUES (?,?,?,?) RETURNING note_id', (content, time.time(), secrets.token_hex(8), checkTokenResult['id'])).fetchone()
@@ -31,7 +30,7 @@ class NotesAPI:
         checkTokenResult = UtilitiesAPI.checkToken(access_token)
 
         if checkTokenResult['validToken']:
-            with sqlite3.connect(ConfigAPI.database) as conn:
+            with UtilitiesAPI.connectdb(ConfigAPI.new_database) as conn:
                 cursor = conn.cursor()
 
                 notes_query = cursor.execute('SELECT content,date,note_id FROM Notes WHERE creator = (?) ORDER BY date DESC', [checkTokenResult['id']]).fetchall()
@@ -58,7 +57,7 @@ class NotesAPI:
         checkTokenResult = UtilitiesAPI.checkToken(access_token)
 
         if checkTokenResult['validToken']:
-            with sqlite3.connect(ConfigAPI.database) as conn:
+            with UtilitiesAPI.connectdb(ConfigAPI.new_database) as conn:
                 cursor = conn.cursor()
 
                 note_query = cursor.execute('SELECT content,date,note_id FROM Notes WHERE note_id = (?) AND creator = (?)', (note_id, checkTokenResult['id'])).fetchone()
@@ -78,7 +77,7 @@ class NotesAPI:
         checkTokenResult = UtilitiesAPI.checkToken(access_token)
 
         if checkTokenResult['validToken']:
-            with sqlite3.connect(ConfigAPI.database) as conn:
+            with UtilitiesAPI.connectdb(ConfigAPI.new_database) as conn:
                 cursor = conn.cursor()
 
                 get_note_query = cursor.execute('SELECT id,creator FROM Notes WHERE note_id = (?)', [note_id]).fetchone()
@@ -106,7 +105,7 @@ class NotesAPI:
         checkTokenResult = UtilitiesAPI.checkToken(access_token)
 
         if checkTokenResult['validToken']:
-            with sqlite3.connect(ConfigAPI.database) as conn:
+            with UtilitiesAPI.connectdb(ConfigAPI.new_database) as conn:
                 cursor = conn.cursor()
 
                 get_note_query = cursor.execute('SELECT id,creator FROM Notes WHERE note_id = (?)', [note_id]).fetchone()

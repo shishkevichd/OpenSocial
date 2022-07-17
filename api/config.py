@@ -1,2 +1,7 @@
 class ConfigAPI:
-    database = "opensocial.db"
+    new_database = {
+        "type": "sqlite",
+        "data": {
+            "dbname": 'opensocial.db'
+        }
+    }

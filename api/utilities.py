@@ -1,3 +1,6 @@
+from peewee import *
+
+# миграция
 import sqlite3
 
 from api.config import ConfigAPI
@@ -5,7 +8,7 @@ from api.config import ConfigAPI
 
 class UtilitiesAPI:
     def create_db():
-        conn = sqlite3.connect(ConfigAPI.database)
+        conn = UtilitiesAPI.connectdb(ConfigAPI.new_database)
 
         cursor = conn.cursor()
         
@@ -21,8 +24,9 @@ class UtilitiesAPI:
             phone_number INTEGER,
             account_level TEXT DEFAULT 'user',
             user_id TEXT NOT NULL,
-            gender INTEGER,
-            birthday TEXT
+            gender INTEGER NOT NULL,
+            birthday TEXT,
+            create_time TEXT NOT NULL
         );
 
         CREATE TABLE IF NOT EXISTS Notes (
@@ -48,7 +52,7 @@ class UtilitiesAPI:
         conn.close()
 
     def checkToken(access_token):
-        with sqlite3.connect(ConfigAPI.database) as conn:
+        with UtilitiesAPI.connectdb(ConfigAPI.new_database) as conn:
             cursor = conn.cursor()
             
             result = cursor.execute('SELECT id FROM Accounts WHERE access_token = (?)', [access_token]).fetchone()
@@ -58,8 +62,16 @@ class UtilitiesAPI:
             else:
                 return { "validToken": False }
 
+    def connectdb(config):
+        database_provider = config['type']
+
+        if database_provider == 'sqlite':
+            return SqliteDatabase(config['data']['dbname'])
+        else:
+            return
+
     def getUserJSON(user_id, additional=False):
-        with sqlite3.connect(ConfigAPI.database) as conn:
+        with UtilitiesAPI.connectdb(ConfigAPI.new_database) as conn:
             cursor = conn.cursor()
             
             result = cursor.execute('SELECT * FROM Accounts WHERE user_id = (?)', [user_id]).fetchone()

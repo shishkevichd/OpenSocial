@@ -14,9 +14,9 @@ MainAPI.register_blueprint(NotesRoutesAPI)
 MainAPI.register_blueprint(TestRoutesAPI)
 
 
-# @MainAPI.errorhandler(KeyError)
-# def APIServerError(error):
-#     return { "success": False, "why": "incorrect_request" }
+@MainAPI.errorhandler(KeyError)
+def APIServerError(error):
+    return { "success": False, "why": "incorrect_request" }
 
 
 @MainAPI.errorhandler(404)
