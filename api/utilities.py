@@ -5,48 +5,13 @@ from api.config import ConfigAPI
 
 class UtilitiesAPI:
     def create_db():
-        conn = UtilitiesAPI.connectdb(ConfigAPI.new_database)
+        with open('./api/sql/create_tables.sql', 'r') as file:
+            conn = UtilitiesAPI.connectdb(ConfigAPI.new_database)
 
-        cursor = conn.cursor()
-        
-        cursor.executescript('''
-        CREATE TABLE IF NOT EXISTS Accounts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-            account_email TEXT NOT NULL,
-            account_password TEXT NOT NULL,
-            first_name TEXT NOT NULL,
-            last_name TEXT NOT NULL,
-            account_status TEXT,
-            access_token TEXT NOT NULL,
-            phone_number INTEGER,
-            account_level TEXT DEFAULT 'user',
-            user_id TEXT NOT NULL,
-            gender INTEGER NOT NULL,
-            birthday TEXT,
-            create_time TEXT NOT NULL
-        );
+            cursor = conn.cursor()
+            cursor.executescript(file.read())
 
-        CREATE TABLE IF NOT EXISTS Notes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-            content TEXT NOT NULL,
-            creator INTEGER NOT NULL,
-            date INTEGER NOT NULL,
-            note_id TEXT NOT NULL,
-            is_edited INT DEFAULT 0,
-            FOREIGN KEY(creator) REFERENCES Accounts(id)
-        );
-
-        CREATE TABLE IF NOT EXISTS Friends (
-            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-            first_friend INTEGER NOT NULL,
-            second_friend INTEGER NOT NULL,
-            status TEXT NOT NULL DEFAULT 'incoming',
-            FOREIGN KEY(first_friend) REFERENCES Accounts(id)
-            FOREIGN KEY(second_friend) REFERENCES Accounts(id)
-        )
-        ''')
-
-        conn.close()
+            conn.close()
 
     def checkToken(access_token):
         with UtilitiesAPI.connectdb(ConfigAPI.new_database) as conn:
