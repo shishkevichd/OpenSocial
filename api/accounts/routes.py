@@ -14,7 +14,7 @@ def AccountLoginAPI():
 @AccountRoutesAPI.post('/register')
 def AccountRegisterAPI():
     params = request.json
-    return AccountAPI.register(params['email'], params['password'], params['first_name'], params['last_name'])
+    return AccountAPI.register(params['email'], params['password'], params['first_name'], params['last_name'], params['gender'])
 
 
 @AccountRoutesAPI.post('/getUser')

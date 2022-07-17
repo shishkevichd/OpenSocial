@@ -1,8 +1,5 @@
 from peewee import *
-
-# миграция
-import sqlite3
-
+from playhouse.db_url import connect
 from api.config import ConfigAPI
 
 
@@ -63,12 +60,7 @@ class UtilitiesAPI:
                 return { "validToken": False }
 
     def connectdb(config):
-        database_provider = config['type']
-
-        if database_provider == 'sqlite':
-            return SqliteDatabase(config['data']['dbname'])
-        else:
-            return
+        return connect(config)
 
     def getUserJSON(user_id, additional=False):
         with UtilitiesAPI.connectdb(ConfigAPI.new_database) as conn:

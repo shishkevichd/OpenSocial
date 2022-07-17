@@ -1,10 +1,10 @@
-import sqlite3
 import re
 import secrets
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from api.utilities import UtilitiesAPI
 from api.config import ConfigAPI
+from datetime import datetime
 
 class AccountAPI:
     def login(account_email, account_password):
@@ -12,7 +12,7 @@ class AccountAPI:
             "incorrect_email_or_password"
         ]
 
-        with sqlite3.connect(ConfigAPI.database) as conn:
+        with UtilitiesAPI.connectdb(ConfigAPI.new_database) as conn:
             cursor = conn.cursor()
 
             result = cursor.execute('SELECT access_token, account_password, user_id FROM Accounts WHERE account_email = (?)', [account_email]).fetchone()
@@ -35,7 +35,7 @@ class AccountAPI:
 
         email_regex = r"^((\w[^\W]+)[\.\-]?){1,}\@(([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$"
 
-        with sqlite3.connect(ConfigAPI.database) as conn:
+        with UtilitiesAPI.connectdb(ConfigAPI.new_database) as conn:
             cursor = conn.cursor()
 
             check_is_email_exists = cursor.execute('SELECT id FROM Accounts WHERE account_email = (?)', [account_email]).fetchone()
@@ -44,14 +44,17 @@ class AccountAPI:
                 if bool(re.search(email_regex, account_email)):
                     if UtilitiesAPI.password_check(account_password):
                         if len(first_name) > 2 and len(last_name) > 2:
-                            if gender == 0 or gender == 1 and type(gender) is int:
-                                result = cursor.execute('INSERT INTO Accounts (account_email, account_password, first_name, last_name, access_token, user_id, gender) VALUES (?,?,?,?,?,?,?) RETURNING access_token, user_id', (account_email, generate_password_hash(account_password), first_name, last_name, secrets.token_hex(20), secrets.token_hex(4), gender))
+                            if int(gender) == 1 or int(gender) == 2:
+                                result = cursor.execute(
+                                    'INSERT INTO Accounts (account_email, account_password, first_name, last_name, access_token, user_id, gender, create_time) VALUES (?,?,?,?,?,?,?,?) RETURNING access_token, user_id', 
+                                    (account_email, generate_password_hash(account_password), first_name, last_name, secrets.token_hex(20), secrets.token_hex(4), int(gender), str(datetime.utcnow()))
+                                )
 
                                 new_user_access_token = result.fetchone()
 
                                 return { "success": True, "data": { "access_token": new_user_access_token[0], "user_id": new_user_access_token[1] } }
                             else:
-                                return UtilitiesAPI.errorJson(errors[4])
+                                return UtilitiesAPI.errorJson(errors[3])
                         else:
                             return UtilitiesAPI.errorJson(errors[2])
                     else:
@@ -59,7 +62,7 @@ class AccountAPI:
                 else:
                     return UtilitiesAPI.errorJson(errors[0])
             else:
-                return UtilitiesAPI.errorJson(errors[3])
+                return UtilitiesAPI.errorJson(errors[4])
     def getUser(access_token, user_id=""):
         errors = [
             "incorrect_token",
@@ -68,7 +71,7 @@ class AccountAPI:
         ]
 
         if UtilitiesAPI.checkToken(access_token)['validToken']:
-            with sqlite3.connect(ConfigAPI.database) as conn:
+            with UtilitiesAPI.connectdb(ConfigAPI.new_database) as conn:
                 cursor = conn.cursor()
 
                 if user_id:
@@ -96,7 +99,7 @@ class AccountAPI:
         check_token = UtilitiesAPI.checkToken(access_token)
 
         if check_token['validToken']:
-            with sqlite3.connect(ConfigAPI.database) as conn:
+            with UtilitiesAPI.connectdb(ConfigAPI.new_database) as conn:
                 cursor = conn.cursor()
 
                 is_sent_request_to_yourself = cursor.execute('SELECT user_id FROM Accounts WHERE access_token = (?)', [access_token]).fetchone()
@@ -138,7 +141,7 @@ class AccountAPI:
         check_token = UtilitiesAPI.checkToken(access_token)
 
         if check_token['validToken']:
-            with sqlite3.connect(ConfigAPI.database) as conn:
+            with UtilitiesAPI.connectdb(ConfigAPI.new_database) as conn:
                 cursor = conn.cursor()
 
                 is_yourself = cursor.execute('SELECT user_id FROM Accounts WHERE access_token = (?)', [access_token]).fetchone()
@@ -175,7 +178,7 @@ class AccountAPI:
         check_token = UtilitiesAPI.checkToken(access_token)
 
         if check_token['validToken']:
-            with sqlite3.connect(ConfigAPI.database) as conn:
+            with UtilitiesAPI.connectdb(ConfigAPI.new_database) as conn:
                 cursor = conn.cursor()
 
                 is_yourself = cursor.execute('SELECT user_id FROM Accounts WHERE access_token = (?)', [access_token]).fetchone()
@@ -212,7 +215,7 @@ class AccountAPI:
         check_token = UtilitiesAPI.checkToken(access_token)
 
         if check_token['validToken']:
-            with sqlite3.connect(ConfigAPI.database) as conn:
+            with UtilitiesAPI.connectdb(ConfigAPI.new_database) as conn:
                 cursor = conn.cursor()
 
                 is_yourself = cursor.execute('SELECT user_id FROM Accounts WHERE access_token = (?)', [access_token]).fetchone()
