@@ -1,6 +1,6 @@
 from flask import Flask
-from api.main import MainAPI
-from api.utilities import UtilitiesAPI
+from opensocial.main import MainAPI
+from opensocial.utilities import UtilitiesAPI
 
 
 # Init app
