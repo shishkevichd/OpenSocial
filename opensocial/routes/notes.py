@@ -1,4 +1,3 @@
-import imp
 from flask import Blueprint, request
 from opensocial.api.notes import Notes
 

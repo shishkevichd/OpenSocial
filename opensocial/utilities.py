@@ -6,10 +6,13 @@ class UtilitiesAPI:
     def create_db():
         from opensocial.api.accounts import Accounts
         from opensocial.api.friends import Friends
-        from opensocial.api.notes import Notes
+        from opensocial.api.notes import Notes 
+        from opensocial.api.groups import Groups 
+        from opensocial.api.subscribers import Subscribers 
+        from opensocial.api.posts import Posts 
 
         with database:
-            database.create_tables([Accounts, Friends, Notes])
+            database.create_tables([Accounts, Friends, Notes, Groups, Subscribers, Posts])
 
     def errorJson(reason):
         return { "status": False, "why": reason }, 400

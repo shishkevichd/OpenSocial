@@ -1,6 +1,7 @@
 from flask import Flask
 from opensocial.main import MainAPI
 from opensocial.utilities import UtilitiesAPI
+from opensocial.config import ConfigAPI
 
 
 # Init app
@@ -14,4 +15,8 @@ app.register_blueprint(MainAPI)
 # Start application
 if __name__ == '__main__':
     UtilitiesAPI.create_db()
-    app.run(port=8000, debug=True)
+    app.run(
+        host=ConfigAPI.server['host'],
+        port=ConfigAPI.server['port'],
+        debug=ConfigAPI.server['debug']
+    )
