@@ -188,6 +188,57 @@ class Groups(BaseModel):
         else:
             return UtilitiesAPI.errorJson(editPostErrors[0])
 
+    def deleteSubscriberFromGroup(access_token, group_id, user_id):
+        from opensocial.api.subscribers import Subscribers 
+        
+        deleteSubscriberFromGroupErrors = [
+            'invalid_token',
+            'group_not_found',
+            'user_not_found',
+            'user_not_subscribed',
+            'access_denied',
+            'cant_delete_yourself'
+        ]
+
+        if Accounts.isValidAccessToken(access_token):
+            target_group = Groups.get_or_none(Groups.group_id == group_id)
+            target_user = Accounts.get_or_none(Accounts.user_id == user_id)
+
+            if target_group != None:
+                if target_user != None:
+                    subscribedUser = Subscribers.get_or_none(
+                        Subscribers.subscriber == target_user,
+                        Subscribers.subscribed_at == target_group
+                    )
+
+                    isUserHasAccess = Subscribers.get_or_none(
+                        Subscribers.subscriber == Accounts.get(Accounts.access_token == access_token),
+                        Subscribers.subscribed_at == target_group
+                    )
+
+                    if subscribedUser != None:
+                        if isUserHasAccess != None and isUserHasAccess.status == 'admin' or isUserHasAccess == 'owner':
+                            isYourself = Accounts.get(Accounts.access_token == access_token)
+
+                            if isYourself.user_id == user_id:
+                                subscribedUser.delete_instance()
+
+                                return {
+                                    'status': True
+                                }
+                            else:
+                                return UtilitiesAPI.errorJson(deleteSubscriberFromGroupErrors[5])
+                        else:
+                            return UtilitiesAPI.errorJson(deleteSubscriberFromGroupErrors[4])
+                    else:
+                        return UtilitiesAPI.errorJson(deleteSubscriberFromGroupErrors[3])
+                else:
+                    return UtilitiesAPI.errorJson(deleteSubscriberFromGroupErrors[2])
+            else:
+                return UtilitiesAPI.errorJson(deleteSubscriberFromGroupErrors[1])
+        else:
+            return UtilitiesAPI.errorJson(deleteSubscriberFromGroupErrors[0])
+
     def setUserGroupRole(access_token, group_id, user_id, status):
         from opensocial.api.subscribers import Subscribers
 

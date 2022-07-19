@@ -45,3 +45,9 @@ def GroupsSubscribeAPI():
 def GroupsUnsubscribeAPI():
     params = request.json
     return Groups.unsubscribeFromGroup(params['access_token'], params['group_id'])
+
+
+@GroupsRAPI.post('/deleteSubscriberFromGroup')
+def GroupsDeleteSubscriberFromGroupAPI():
+    params = request.json
+    return Groups.deleteSubscriberFromGroup(params['access_token'], params['group_id'], params['user_id'])
