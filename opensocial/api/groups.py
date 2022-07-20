@@ -2,7 +2,7 @@ from datetime import datetime
 import secrets
 from peewee import *
 from opensocial.api.accounts import Accounts
-from opensocial.model import BaseModel
+from opensocial.model import BaseModel, JSONField
 from opensocial.utilities import UtilitiesAPI
 
 
@@ -12,26 +12,57 @@ class Groups(BaseModel):
     group_id = CharField(15)
     group_name = CharField(64, null=False)
     group_status = CharField(256, null=True)
-    meta_web = TextField(null=True)
-    meta_address = TextField(null=True)
-    meta_phone_number = CharField(24, null=True)
+    group_type = CharField(24, default='opened')
+    meta = JSONField(null=True)
 
     def getJSON(self, advanced=False):
         json_object = {
             'group_id': self.group_id,
             'group_name': self.group_name,
             'group_status': self.group_status if self.group_status else None,
-            'meta': {
-                'meta_web': self.meta_web if self.meta_web else None,
-                'meta_address': self.meta_address if self.meta_address else None,
-                'meta_phone_number': self.meta_phone_number if self.meta_phone_number else None
-            }
+            'meta': self.meta if self.meta else None
         }
 
         if advanced:
             json_object['posts'] = [post.getJSON() for post in self.posts]
         
         return json_object
+
+    def getGroup(access_token, group_id):
+        from opensocial.api.subscribers import Subscribers
+
+        getGroupErrors = [
+            'invalid_token',
+            'group_not_found',
+            'closed_group',
+            'invalid_type'
+        ]
+
+        if Accounts.isValidAccessToken(access_token):
+            target_group = Groups.get_or_none(Groups.group_id == group_id)
+
+            if target_group != None:
+                if target_group.group_type == 'opened':
+                    return target_group.getJSON()
+                elif target_group.group_type == 'closed' or target_group.group_type == 'local':
+                    is_user_subscribed = Subscribers.get_or_none(
+                        Subscribers.subscriber == Accounts.get(Accounts.access_token == access_token),
+                        Subscribers.subscribed_at == target_group
+                    )
+
+                    if is_user_subscribed != None:
+                        return target_group.getJSON()
+                    else:
+                        if target_group.group_type == 'local':
+                            return UtilitiesAPI.errorJson(getGroupErrors[2])
+                        else:
+                            return UtilitiesAPI.errorJson(getGroupErrors[1]) 
+                else:
+                    return UtilitiesAPI.errorJson(getGroupErrors[3])
+            else:
+                return UtilitiesAPI.errorJson(getGroupErrors[1])
+        else:
+            return UtilitiesAPI.errorJson(getGroupErrors[0])
 
     def createGroup(access_token, group_name):
         from opensocial.api.subscribers import Subscribers
