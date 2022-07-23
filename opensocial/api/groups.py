@@ -96,128 +96,19 @@ class Groups(BaseModel):
             return UtilitiesAPI.errorJson(createGroupErrors[0])
 
     def createPost(access_token, group_id, content):
-        from opensocial.api.subscribers import Subscribers
         from opensocial.api.posts import Posts
 
-        createPostErrors = [
-            "invalid_token",
-            "group_not_found",
-            "access_denied",
-            "short_content"
-        ]
-
-        if Accounts.isValidAccessToken(access_token):
-            target_group = Groups.get_or_none(Groups.group_id == group_id)
-            creator_user = Accounts.get(Accounts.access_token == access_token)
-
-            if target_group != None:
-                poster = Subscribers.get_or_none(Subscribers.subscriber == creator_user)
-
-                if poster != None and poster.status != 'user':
-                    if len(content) >= 1:
-                        new_post_id = secrets.token_hex(8)
-                   
-                        Posts.create(
-                            group_creator=target_group,
-                            group_created_by=creator_user,
-                            content=content,
-                            post_id=new_post_id
-                        )
-
-                        return {
-                            'status': True,
-                            'data': {
-                                'post_id': new_post_id,
-                                'group_id': target_group.group_id
-                            }
-                        }
-                    else:
-                        return UtilitiesAPI.errorJson(createPostErrors[3]) 
-                else:
-                    return UtilitiesAPI.errorJson(createPostErrors[2])
-            else:
-                return UtilitiesAPI.errorJson(createPostErrors[1])
-        else:
-            return UtilitiesAPI.errorJson(createPostErrors[0])
+        return Posts.createPost(type='group', access_token=access_token, group_id=group_id, content=content)
 
     def deletePost(access_token, group_id, post_id):
-        from opensocial.api.subscribers import Subscribers
         from opensocial.api.posts import Posts
 
-        deletePostErrors = [
-            "invalid_token",
-            "group_not_found",
-            "access_denied",
-            "post_not_found"
-        ]
-
-        if Accounts.isValidAccessToken(access_token):
-            target_group = Groups.get_or_none(Groups.group_id == group_id)
-            creator_user = Accounts.get(Accounts.access_token == access_token)
-
-            if target_group != None:
-                poster = Subscribers.get_or_none(Subscribers.subscriber == creator_user)
-
-                if poster != None and poster.status != 'user':
-                    target_post = Posts.get_or_none(Posts.post_id == post_id)
-
-                    if target_post != None:
-                        target_post.delete_instance()
-
-                        return {
-                            'status': True
-                        }
-                    else:
-                        return UtilitiesAPI.errorJson(deletePostErrors[3])
-                else:
-                    return UtilitiesAPI.errorJson(deletePostErrors[2])
-            else:
-                return UtilitiesAPI.errorJson(deletePostErrors[1])
-        else:
-            return UtilitiesAPI.errorJson(deletePostErrors[0])
+        return Posts.deletePost(type='group', access_token=access_token, group_id=group_id, post_id=post_id)
 
     def editPost(access_token, group_id, post_id, content):
-        from opensocial.api.subscribers import Subscribers
         from opensocial.api.posts import Posts
 
-        editPostErrors = [
-            "invalid_token",
-            "group_not_found",
-            "access_denied",
-            "post_not_found"
-        ]
-
-        if Accounts.isValidAccessToken(access_token):
-            target_group = Groups.get_or_none(Groups.group_id == group_id)
-            editor = Accounts.get(Accounts.access_token == access_token)
-
-            if target_group != None:
-                poster = Subscribers.get_or_none(
-                    Subscribers.subscriber == editor,
-                    Subscribers.subscribed_at == target_group
-                )
-
-                if poster != None and poster.status != 'user':
-                    target_post = Posts.get_or_none(Posts.post_id == post_id)
-
-                    if target_post != None:
-                        target_post.content = content
-                        target_post.is_edited = True
-                        target_post.edit_time = datetime.utcnow()
-
-                        target_post.save()
-
-                        return {
-                            'status': True
-                        }
-                    else:
-                        return UtilitiesAPI.errorJson(editPostErrors[3]) 
-                else:
-                    return UtilitiesAPI.errorJson(editPostErrors[2])
-            else:
-                return UtilitiesAPI.errorJson(editPostErrors[1])
-        else:
-            return UtilitiesAPI.errorJson(editPostErrors[0])
+        return Posts.editPost(type='group', access_token=access_token, group_id=group_id, post_id=post_id, content=content)
 
     def deleteSubscriberFromGroup(access_token, group_id, user_id):
         from opensocial.api.subscribers import Subscribers 

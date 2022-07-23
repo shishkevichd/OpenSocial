@@ -44,6 +44,24 @@ def AccountDeclineFriendRequestAPI():
 
 
 @AccountsRAPI.post('/deleteFriend')
-def AccountDeleteFrienAPI():
+def AccountDeleteFriendAPI():
     params = request.json
     return Friends.deleteFromFriends(params['access_token'], params['user_id'])
+
+
+@AccountsRAPI.post('/createPost')
+def CreatePostUserAPI():
+    params = request.json
+    return Accounts.createPost(params['access_token'], params['content'])
+
+
+@AccountsRAPI.post('/deletePost')
+def DeletePostUserAPI():
+    params = request.json
+    return Accounts.deletePost(params['access_token'], params['post_id'])
+
+
+@AccountsRAPI.post('/editPost')
+def EditPostUserAPI():
+    params = request.json
+    return Accounts.editPost(params['access_token'], params['post_id'], params['content'])

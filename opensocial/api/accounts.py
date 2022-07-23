@@ -131,3 +131,17 @@ class Accounts(BaseModel):
         else:
             return UtilitiesAPI.errorJson(registerErrors[4])
 
+    def createPost(access_token, content):
+        from opensocial.api.posts import Posts
+
+        return Posts.createPost(type='user', access_token=access_token, content=content)
+
+    def deletePost(access_token, post_id):
+        from opensocial.api.posts import Posts
+
+        return Posts.deletePost(type='user', access_token=access_token, post_id=post_id)
+
+    def editPost(access_token, post_id, content):
+        from opensocial.api.posts import Posts
+
+        return Posts.editPost(type='user', access_token=access_token, post_id=post_id, content=content)
