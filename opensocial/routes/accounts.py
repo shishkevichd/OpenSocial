@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 from opensocial.api.accounts import Accounts
 from opensocial.api.friends import Friends
+from opensocial.api.messages import Dialogs
 
 
 AccountsRAPI = Blueprint('Accounts', __name__, url_prefix='/users')
@@ -24,6 +25,7 @@ def AccountGet():
     params = request.json
     return Accounts.getUser(params['access_token'], params['user_id'])
 
+# Friends
 
 @AccountsRAPI.post('/sendFriendRequest')
 def AccountSendFriendRequestAPI():
@@ -48,6 +50,7 @@ def AccountDeleteFriendAPI():
     params = request.json
     return Friends.deleteFromFriends(params['access_token'], params['user_id'])
 
+# Posts
 
 @AccountsRAPI.post('/createPost')
 def CreatePostUserAPI():
@@ -65,3 +68,22 @@ def DeletePostUserAPI():
 def EditPostUserAPI():
     params = request.json
     return Accounts.editPost(params['access_token'], params['post_id'], params['content'])
+
+# Messages
+
+@AccountsRAPI.post('/sendMessage')
+def SendMessageAPI():
+    params = request.json
+    return Dialogs.sendMessageTo(params['access_token'], params['user_id'], params['content'])
+
+
+@AccountsRAPI.post('/getDialog')
+def GetDialogAPI():
+    params = request.json
+    return Dialogs.getDialog(params['access_token'], params['dialog_id'])
+
+
+@AccountsRAPI.post('/getDialogs')
+def GetDialogsAPI():
+    params = request.json
+    return Dialogs.getDialogs(params['access_token'])

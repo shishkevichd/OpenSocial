@@ -10,9 +10,10 @@ class UtilitiesAPI:
         from opensocial.api.groups import Groups 
         from opensocial.api.subscribers import Subscribers 
         from opensocial.api.posts import Posts 
+        from opensocial.api.messages import Dialogs, Messages
 
         with database:
-            database.create_tables([Accounts, Friends, Notes, Groups, Subscribers, Posts])
+            database.create_tables([Accounts, Friends, Notes, Groups, Subscribers, Posts, Dialogs, Messages])
 
     def errorJson(reason):
         return { "status": False, "why": reason }, 400
