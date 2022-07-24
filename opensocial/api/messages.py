@@ -88,6 +88,54 @@ class Dialogs(BaseModel):
         else:
             return UtilitiesAPI.errorJson(getDialogsErrors[0])
 
+    def deleteMessage(access_token, message_id):
+        deleteMessageErrors = [
+            'invalid_token',
+            'message_not_found'
+        ]
+
+        if Accounts.isValidAccessToken(access_token):
+            target_message = Messages.get_or_none((Messages.sender == Accounts.get(Accounts.access_token == access_token)) & (Messages.message_id == message_id))
+
+            if target_message != None:
+                target_message.deleteMessage()
+
+                return {
+                    'status': True
+                }
+            else:
+                return UtilitiesAPI.errorJson(deleteMessageErrors[1])
+        else:
+            return UtilitiesAPI.errorJson(deleteMessageErrors[0])
+
+    def editMessage(access_token, message_id, content):
+      editMessageErrors = [
+        'invalid_token',
+        'message_not_found',
+        'short_content'
+      ]
+     
+      if Accounts.isValidAccessToken(access_token):
+        target_message = Messages.get_or_none((Messages.sender == Accounts.get(Accounts.access_token == access_token)) & (Messages.message_id == message_id))
+
+        if target_message != None:
+            if len(content) >= 1 & len(content) < 2048:
+                target_message.is_edited = True
+                target_message.edited_time = datetime.utcnow()
+                target_message.content = content
+
+                target_message.save()
+
+                return {
+                    'status': True
+                }
+            else:
+                return UtilitiesAPI.errorJson(editMessageErrors[2])
+        else:
+            return UtilitiesAPI.errorJson(editMessageErrors[1])
+      else:
+        return UtilitiesAPI.errorJson(editMessageErrors[0])
+
     def sendMessageTo(access_token, user_id, messageContent):
         sendMessageErrors = [
             'invalid_token',
@@ -110,7 +158,8 @@ class Dialogs(BaseModel):
                         Messages.create(
                             sender=Accounts.get(Accounts.access_token == access_token),
                             content=messageContent,
-                            to_dialog=target_dialog.first()
+                            to_dialog=target_dialog.first(),
+                            message_id=secrets.token_hex(8)
                         )
 
                         return {
@@ -128,7 +177,8 @@ class Dialogs(BaseModel):
                         Messages.create(
                             sender=Accounts.get(Accounts.access_token == access_token),
                             content=messageContent,
-                            to_dialog=Dialogs.get(Dialogs.dialog_id == new_dialog_id)
+                            to_dialog=Dialogs.get(Dialogs.dialog_id == new_dialog_id),
+                            message_id=secrets.token_hex(8)
                         )
 
                         return {
@@ -150,12 +200,14 @@ class Messages(BaseModel):
     is_edited = BooleanField(default=False, null=True)
     edited_time = DateTimeField(default=None, null=True)
     to_dialog = ForeignKeyField(Dialogs, backref="messages")
+    message_id = CharField(16)
 
     def getJSON(self):
         jsonObject = {
             "sender": self.sender.getJSON(),
             "content": self.content,
-            "date": self.send_date
+            "date": self.send_date,
+            "id": self.message_id
         }
 
         if self.is_edited:
@@ -165,3 +217,6 @@ class Messages(BaseModel):
             }
         
         return jsonObject
+
+    def deleteMessage(self):
+        return self.delete_instance()

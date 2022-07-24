@@ -87,3 +87,15 @@ def GetDialogAPI():
 def GetDialogsAPI():
     params = request.json
     return Dialogs.getDialogs(params['access_token'])
+
+
+@AccountsRAPI.post('/editMessage')
+def EditMessageAPI():
+    params = request.json
+    return Dialogs.editMessage(params['access_token'], params['message_id'], params['content'])
+
+
+@AccountsRAPI.post('/deleteMessage')
+def DeleteMessageAPI():
+    params = request.json
+    return Dialogs.deleteMessage(params['access_token'], params['message_id'])
