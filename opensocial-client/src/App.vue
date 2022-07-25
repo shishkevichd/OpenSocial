@@ -1,9 +1,16 @@
 <template>
-  <router-view></router-view>
+  <div class="container">
+    <navbar-vue />
+    <router-view></router-view>
+  </div>
 </template>
 
-<style>
-html,body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+<script>
+import NavbarVue from "./components/Navbar.vue";
+
+export default {
+  components: {
+    NavbarVue
+  }
 }
-</style>
+</script>
