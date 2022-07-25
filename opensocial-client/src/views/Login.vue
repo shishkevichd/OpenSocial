@@ -4,7 +4,7 @@
             <h2>Страница входа</h2>
             <p class="lead">Описание</p>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-4" v-if="currentSection == 'login'">
             <div class="alert alert-danger" v-if="loggingData.incorrectPassword" role="alert">
                 Неверная почта или пароль.
             </div>
@@ -22,12 +22,20 @@
                     <input type="checkbox" class="form-check-input" v-model="loginData.wantToLogin" id="wantToLogin">
                     <label class="form-check-label" for="wantToLogin">Хочу войти</label>
                 </div>
-                <button type="submit" v-if="!loggingData.isLoading" :disabled="!loginData.wantToLogin" class="btn btn-primary">Войти</button>
-                <button class="btn btn-primary" v-else type="button" disabled>
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    Войти
-                </button>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="submit" v-if="!loggingData.isLoading" :disabled="!loginData.wantToLogin" class="btn btn-primary">Войти</button>
+                    <button class="btn btn-primary" v-else type="button" disabled>
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Войти
+                    </button>
+                    <button type="button" class="btn btn-secondary" @click="this.currentSection = 'register'">Регистрация</button>
+                </div>
             </form>
+        </div>
+        <div class="col-sm-4" v-else-if="currentSection == 'register'">
+            <div class="section_navigator">
+                <h2><span @click="this.currentSection = 'login'"><i class="bi bi-arrow-left"></i></span> Регистрация</h2>
+            </div>
         </div>
     </div>
 </template>
@@ -46,7 +54,8 @@ export default {
             loggingData: {
                 isLoading: false,
                 incorrectPassword: false
-            }
+            },
+            currentSection: "login"
         }
     },
     methods: {
@@ -66,7 +75,7 @@ export default {
 
                         this.loggingData.isLoading = false
 
-                        this.$router.push({ path: '/' })
+                        window.location.reload()
                     } else {
                         if (data['why'] == 'incorrect_password_or_email') {
                             this.loginData.email = ""
@@ -82,3 +91,18 @@ export default {
     }
 }
 </script>
+
+<style lang="scss">
+.section_navigator {
+    h2 {
+        span {
+            margin-right: 7px;
+
+            &:hover {
+                cursor: pointer;
+                color: var(--bs-primary);
+            }
+        }
+    }
+}
+</style>

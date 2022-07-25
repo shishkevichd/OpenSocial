@@ -69,6 +69,12 @@ def EditPostUserAPI():
     params = request.json
     return Accounts.editPost(params['access_token'], params['post_id'], params['content'])
 
+
+@AccountsRAPI.post('/getPostCompilation')
+def GetPostCompilationAPI():
+    params = request.json
+    return Accounts.getPostCompilation(params['access_token'])
+
 # Messages
 
 @AccountsRAPI.post('/sendMessage')

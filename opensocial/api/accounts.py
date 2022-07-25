@@ -41,6 +41,41 @@ class Accounts(BaseModel):
 
         return json_object
 
+    def getPostCompilation(access_token):
+        from opensocial.api.subscribers import Subscribers
+        from opensocial.api.friends import Friends
+        
+        getPostCompilationErrors = [
+            'invalid_token'
+        ]
+        
+        if Accounts.isValidAccessToken(access_token):
+            posts_array = []
+            subscribed_groups = Subscribers.select().where(Subscribers.subscriber == Accounts.get(Accounts.access_token == access_token))
+
+            if subscribed_groups.exists():
+                for group in subscribed_groups:
+                    group_posts = group.subscribed_at.posts
+
+                    for group_post in group_posts:
+                        posts_array.append(group_post.getJSON())
+
+            friends_post = Friends.select().where((Friends.first_friend == Accounts.get(Accounts.access_token == access_token)) | (Friends.second_friend == Accounts.get(Accounts.access_token == access_token)))
+
+            if friends_post.exists():
+                for friend in friends_post:
+                    friend_posts = friend.posts
+
+                    for friend_post in friend_posts:
+                        posts_array.append(friend_post.getJSON())
+
+            return {
+                'success': True,
+                'data': posts_array
+            }
+        else:
+            return UtilitiesAPI.errorJson(getPostCompilationErrors[0])
+
     def getUser(access_token, user_id):
         getUserErrors = [
             "invalid_token",

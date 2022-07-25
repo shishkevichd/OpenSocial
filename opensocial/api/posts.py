@@ -1,4 +1,6 @@
 from datetime import datetime
+from faulthandler import is_enabled
+import json
 from peewee import *
 from opensocial.model import BaseModel
 from opensocial.api.groups import Groups
@@ -18,6 +20,32 @@ class Posts(BaseModel):
     post_id = CharField(16)
     is_edited = BooleanField(default=False, null=True)
     edit_time = DateTimeField(default=None, null=True)
+
+    def getJSON(self):
+        jsonObject = {
+            'post_id': self.post_id,
+            'content': self.content,
+            'create_datetime': self.create_date
+        }
+
+        if self.is_edited:
+            jsonObject['editData'] = {
+                'isEdited': self.is_edited,
+                'editDatetime': self.edit_time
+            }
+
+        if self.group_creator == None or self.group_created_by == None:
+            jsonObject['creator'] = {
+                'creator_type': 'user',
+                'data': self.user_creator.getJSON()
+            }
+        else:
+            jsonObject['creator'] = {
+                'creator_type': 'group',
+                'data': self.group_creator.getJSON()
+            }
+
+        return jsonObject
 
     def createPost(type, **data):
         if type == 'group':

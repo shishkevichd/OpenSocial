@@ -1,12 +1,22 @@
 import { createRouter, createWebHistory } from "vue-router"
 import OpenSocial from "../opensocial/api.js"
+
 import Home from "../views/Home.vue"
 import Login from "../views/Login.vue"
+
+import News from "../views/MainViews/News.vue"
 
 const routes = [
     { 
         path: '/', 
-        component: Home
+        component: Home,
+        redirect: '/news',
+        children: [
+            {
+                path: '/news',
+                component: News
+            }
+        ]
     },
     {
         path: '/login',
