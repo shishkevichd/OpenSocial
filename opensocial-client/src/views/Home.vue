@@ -6,7 +6,9 @@
             </ul>
         </div>
         <div class="col-sm-9">
-            <router-view></router-view>
+            <keep-alive>
+                <router-view></router-view>
+            </keep-alive>
         </div>
     </div>
 </template>

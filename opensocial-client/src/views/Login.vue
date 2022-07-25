@@ -16,10 +16,10 @@
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Пароль</label>
-                    <input type="password" class="form-control" v-model="loginData.password" minlength="8" id="password">
+                    <input type="password" class="form-control" v-model="loginData.password" required minlength="8" id="password">
                 </div>
                 <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" v-model="loginData.wantToLogin" id="wantToLogin">
+                    <input type="checkbox" class="form-check-input" required v-model="loginData.wantToLogin" id="wantToLogin">
                     <label class="form-check-label" for="wantToLogin">Хочу войти</label>
                 </div>
                 <div class="btn-group" role="group" aria-label="Basic example">

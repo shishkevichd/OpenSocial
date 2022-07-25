@@ -64,10 +64,18 @@ class Accounts(BaseModel):
 
             if friends_post.exists():
                 for friend in friends_post:
-                    friend_posts = friend.posts
+                    if friend.first_friend == Accounts.get(Accounts.access_token == access_token):
+                        friend_posts = friend.second_friend.posts
+                    else:
+                        friend_posts = friend.first_friend.posts
 
                     for friend_post in friend_posts:
                         posts_array.append(friend_post.getJSON())
+
+            your_posts = Accounts.get(Accounts.access_token == access_token).posts
+
+            for post in your_posts:
+                posts_array.append(post.getJSON())
 
             return {
                 'success': True,

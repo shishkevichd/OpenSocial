@@ -64,13 +64,13 @@ export default {
                 margin-bottom: 2px;
 
                 .user {
-                    font-size: 13pt;
+                    font-size: 12pt;
                     font-weight: 600;
                     margin-bottom: -2px;
                 }
 
                 .date {
-                    font-size: 12pt;
+                    font-size: 10pt;
                     color: var(--bs-gray-600);
                 }
             }
