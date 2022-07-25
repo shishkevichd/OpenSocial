@@ -2,7 +2,7 @@
     <div class="card opensocial_post_card mb-3">
         <div class="card-header">
             <div class="post_author">
-                <img class="post_author_avatar" src="https://avatars.dicebear.com/api/initials/your-custom-seed.svg?fontSize=40" alt="Avatar">
+                <img class="post_author_avatar" :src="post.creator.creator_type == 'user' ? post.creator.data.avatar_url : `https://avatars.dicebear.com/api/identicon/group.svg`" alt="Avatar">
                 <div class="post_meta">
                     <span class="user">{{ post.creator.creator_type == 'group' ? post.creator.data.group_name : `${post.creator.data.first_name} ${post.creator.data.last_name}` }}</span>
                     <span class="date">{{ post.create_datetime }}</span>
@@ -53,7 +53,7 @@ export default {
 
             .post_author_avatar {
                 width: 40px;
-                border-radius: 100%;
+                border-radius: 2px;
                 height: 40px;
                 margin-right: 13px;
             }

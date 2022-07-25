@@ -16,6 +16,7 @@ class Accounts(BaseModel):
     last_name = CharField(max_length=50, null=False)
     join_date = DateTimeField(default=datetime.now)
     birthday = DateField(null=True)
+    avatar = CharField(4096, null=True)
     user_id = CharField(max_length=12)
     gender = IntegerField(null=False)
     access_token = TextField(null=False)
@@ -33,7 +34,8 @@ class Accounts(BaseModel):
             'first_name': self.first_name,
             'last_name': self.last_name,
             'gender': 'man' if self.gender == 2 else "women",
-            'user_id': self.user_id
+            'user_id': self.user_id,
+            'avatar_url': self.avatar
         }
         if advanced:
             json_object['join_date'] = self.join_date
@@ -151,7 +153,8 @@ class Accounts(BaseModel):
                                 last_name=last_name,
                                 gender=gender,
                                 access_token=secrets.token_hex(24),
-                                user_id=new_user_id
+                                user_id=new_user_id,
+                                avatar=f"https://avatars.dicebear.com/api/identicon/{new_user_id}.svg"
                             )
 
                             new_user = Accounts.get(Accounts.user_id == new_user_id)
