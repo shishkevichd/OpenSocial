@@ -52,6 +52,12 @@ def AccountDeleteFriendAPI():
 
 # Posts
 
+@AccountsRAPI.post('/getPosts')
+def GetPostsAPI():
+    params = request.json
+    return Accounts.getUserPosts(params['access_token'], params['user_id'])
+
+
 @AccountsRAPI.post('/createPost')
 def CreatePostUserAPI():
     params = request.json

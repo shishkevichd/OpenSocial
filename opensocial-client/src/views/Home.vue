@@ -1,11 +1,11 @@
 <template>
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-3 col-md-4 col-xl-3">
             <ul class="list-group opensocial_tabs">
                 <router-link class="list-group-item list-group-item-action" v-for="tab in opensocialTabs" :to="tab.link" active-class="active"><i :class="`bi ${tab.icon}`"></i> {{ tab.title }}</router-link>
             </ul>
         </div>
-        <div class="col-sm-9">
+        <div class="col-sm-9 col-md-8 col-xl-9">
             <keep-alive>
                 <router-view></router-view>
             </keep-alive>
@@ -37,6 +37,11 @@ export default {
                     title: "Группы",
                     icon: "bi-people-fill",
                     link: "/groups"
+                },
+                {
+                    title: "Друзья",
+                    icon: "bi-person-lines-fill",
+                    link: '/friends'
                 },
                 {
                     title: "Видео",

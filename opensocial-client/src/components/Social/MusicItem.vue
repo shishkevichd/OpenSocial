@@ -9,9 +9,9 @@
         </div>
         <div class="right">
             <ul class="music_item_icons">
-                <li class="item_icon"><i class="bi bi-play"></i></li>
-                <li class="item_icon"><i class="bi bi-download"></i></li>
-                <li class="item_icon"><i class="bi bi-plus-lg"></i></li>
+                <li class="item_icon"><i class="bi bi-play-circle"></i></li>
+                <li class="item_icon"><i class="bi bi-cloud-download"></i></li>
+                <li class="item_icon"><i class="bi bi-plus-square"></i></li>
                 <li class="item_icon"><i class="bi bi-three-dots-vertical"></i></li>
             </ul>
         </div>
@@ -70,7 +70,7 @@
             list-style: none;
 
             .item_icon {
-                margin-right: 14px;
+                margin-right: 18px;
 
                 &:last-child {
                     margin-right: 0;

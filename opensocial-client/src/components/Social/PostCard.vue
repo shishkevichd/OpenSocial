@@ -4,7 +4,7 @@
             <div class="post_author">
                 <img class="post_author_avatar" :src="post.creator.creator_type == 'user' ? post.creator.data.avatar_url : `https://avatars.dicebear.com/api/identicon/group.svg`" alt="Avatar">
                 <div class="post_meta">
-                    <span class="user">{{ post.creator.creator_type == 'group' ? post.creator.data.group_name : `${post.creator.data.first_name} ${post.creator.data.last_name}` }}</span>
+                    <span class="user">{{ post.creator.creator_type == 'group' ? post.creator.data.group_name : post.creator.data.full_name }} <span v-if="post.creator.creator_type == 'user' & post.creator.data.user_id == sessionUser.user_id">(вы)</span></span>
                     <span class="date">{{ post.create_datetime }}</span>
                 </div>
             </div>
@@ -33,7 +33,12 @@ export default {
     props: {
         post: {
             required: true,
-            type: Object
+            type: Object,
+        }
+    },
+    data() {
+        return {
+            sessionUser: JSON.parse(localStorage.getItem('session_json'))
         }
     }
 }
@@ -41,11 +46,13 @@ export default {
 
 <style lang="scss">
 .opensocial_post_card {
+    border: 1px solid #dee2e6;
     .card-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         background-color: transparent;
+        border-bottom: 1px solid #dee2e6;
 
         .post_author {
             display: flex;
@@ -67,6 +74,11 @@ export default {
                     font-size: 12pt;
                     font-weight: 600;
                     margin-bottom: -2px;
+
+                    > span {
+                        color: var(--bs-gray-600);
+                        font-weight: 400;
+                    }
                 }
 
                 .date {

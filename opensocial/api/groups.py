@@ -13,6 +13,7 @@ class Groups(BaseModel):
     group_name = CharField(64, null=False)
     group_status = CharField(256, null=True)
     group_type = CharField(24, default='opened')
+    avatar = CharField(4096, null=True)
     meta = JSONField(null=True)
 
     def getJSON(self, advanced=False):
@@ -20,7 +21,8 @@ class Groups(BaseModel):
             'group_id': self.group_id,
             'group_name': self.group_name,
             'group_status': self.group_status if self.group_status else None,
-            'meta': self.meta if self.meta else None
+            'meta': self.meta if self.meta else None,
+            'avatar_url': self.avatar
         }
 
         if advanced:
@@ -78,7 +80,8 @@ class Groups(BaseModel):
 
                 Groups.create(
                     group_name=group_name,
-                    group_id=new_group_id
+                    group_id=new_group_id,
+                    avatar=f"https://avatars.dicebear.com/api/identicon/{new_group_id}.svg"
                 )
 
                 Subscribers.create(

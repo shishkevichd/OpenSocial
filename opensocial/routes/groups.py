@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from opensocial.api.groups import Groups
+from opensocial.api.accounts import Accounts
 
 
 GroupsRAPI = Blueprint('Groups', __name__, url_prefix='/groups')
@@ -57,3 +58,9 @@ def GroupsDeleteSubscriberFromGroupAPI():
 def GroupsGetAPI():
     params = request.json
     return Groups.getGroup(params['access_token'], params['group_id'])
+
+
+@GroupsRAPI.post('/getSubscribedGroup')
+def GetSubscribedGroupGroups():
+    params = request.json
+    return Accounts.getSubscribedGroup(params['access_token'])

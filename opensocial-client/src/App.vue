@@ -14,3 +14,9 @@ export default {
   }
 }
 </script>
+
+<style>
+* {
+  scrollbar-width: none;
+}
+</style>

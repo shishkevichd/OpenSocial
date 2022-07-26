@@ -10,6 +10,7 @@ import Groups from "../views/MainViews/Groups.vue"
 import Videos from "../views/MainViews/Videos.vue"
 import Music from "../views/MainViews/Music.vue"
 import Profile from "../views/MainViews/Profile.vue"
+import Friends from "../views/MainViews/Friends.vue"
 import Logout from "../views/MainViews/Logout.vue"
 
 const routes = [
@@ -41,6 +42,10 @@ const routes = [
             {
                 path: '/profile',
                 component: Profile
+            },
+            {
+                path: '/friends',
+                component: Friends
             },
         ]
     },
