@@ -37,7 +37,8 @@
                     </div>
                 </div>
                 <div class="my-3" v-else>
-                    <PostCard v-for="post in posts.array" :post="post" />
+                    <PostInput @onPosted="getNews()"/>
+                    <PostCard v-for="post in posts.array" :post="post" @onDeleted="getNews()"/>
                 </div>
             </div>
             <div class="tab-pane fade" id="nav-groups" role="tabpanel" tabindex="0">
@@ -61,6 +62,7 @@
 import OpenSocial from '../../opensocial/api'
 import PostCard from '../../components/Social/PostCard.vue'
 import GroupItem from '../../components/Social/GroupItem.vue';
+import PostInput from '../../components/PostInput.vue';
 
 export default {
     data() {
@@ -118,7 +120,7 @@ export default {
                 this.getGroups();
             });
     },
-    components: { PostCard, GroupItem }
+    components: { PostCard, GroupItem, PostInput }
 }
 </script>
 

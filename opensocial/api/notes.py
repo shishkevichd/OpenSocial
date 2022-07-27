@@ -19,7 +19,8 @@ class Notes(BaseModel):
         json_object = {
             'note_id': self.note_id,
             'is_edited': self.is_edited,
-            'create_date': self.creation_date
+            'create_date': self.creation_date,
+            'creator': self.creator.getJSON()
         }
 
         if advanced:

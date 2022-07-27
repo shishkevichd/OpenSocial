@@ -15,8 +15,12 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 * {
   scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 </style>

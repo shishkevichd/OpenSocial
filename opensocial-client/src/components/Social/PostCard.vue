@@ -4,15 +4,28 @@
             <div class="post_author">
                 <img class="post_author_avatar" :src="post.creator.creator_type == 'user' ? post.creator.data.avatar_url : `https://avatars.dicebear.com/api/identicon/group.svg`" alt="Avatar">
                 <div class="post_meta">
-                    <span class="user">{{ post.creator.creator_type == 'group' ? post.creator.data.group_name : post.creator.data.full_name }} <span v-if="post.creator.creator_type == 'user' & post.creator.data.user_id == sessionUser.user_id">(вы)</span></span>
+                    <span class="user">{{ post.creator.creator_type == 'group' ? post.creator.data.group_name : post.creator.data.full_name }} <span v-if="isCreatorIsYou">(вы)</span></span>
                     <span class="date">{{ post.create_datetime }}</span>
                 </div>
             </div>
             <ul class="post_card_icons">
-                <li class="card_icon"><i class="bi bi-three-dots"></i></li>
+                <li class="card_icon" v-if="isCreatorIsYou && !alerts.isDeletedAlert" @click="alerts.isDeletedAlert = true"><i class="bi bi-trash-fill"></i></li>
+                <li class="card_icon" v-if="isCreatorIsYou"><i class="bi bi-pencil-fill"></i></li>
             </ul>
         </div>
         <div class="card-body">
+            <div class="alert alert-danger delete-alert" v-if="alerts.isDeletedAlert">
+                <div class="left">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <span>Вы хотите удалить этот пост?</span>
+                </div>
+                <div class="right">
+                    <ul>
+                        <li @click="deletePost"><i class="bi bi-check2"></i></li>
+                        <li @click="alerts.isDeletedAlert = false"><i class="bi bi-x-lg"></i></li>
+                    </ul>
+                </div>
+            </div>
             <p class="card-text">{{ post.content }}</p>
             <div class="post_card_footer">
                 <ul class="footer_buttons">
@@ -29,6 +42,7 @@
 </template>
 
 <script>
+import OpenSocial from '../../opensocial/api'
 export default {
     props: {
         post: {
@@ -38,7 +52,36 @@ export default {
     },
     data() {
         return {
-            sessionUser: JSON.parse(localStorage.getItem('session_json'))
+            sessionUser: JSON.parse(localStorage.getItem('session_json')),
+            alerts: {
+                isDeletedAlert: false,
+                isEditedAlert: false,
+            }
+        }
+    },
+    methods: {
+        deletePost() {
+            if (this.post.creator.creator_type == 'user') {
+                OpenSocial.request('users/deletePost', {
+                    access_token: this.sessionUser.access_token,
+                    post_id: this.post.post_id
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        this.$emit('onDeleted')
+                    });
+            } else {
+                
+            }
+        }
+    },
+    computed: {
+        isCreatorIsYou() {
+            if (this.post.creator.creator_type == 'user' & this.post.creator.data.user_id == this.sessionUser.user_id) {
+                return true
+            } else {
+                return false
+            }
         }
     }
 }
@@ -100,11 +143,49 @@ export default {
                 &:last-child {
                     margin-right: 0;
                 }
+
+                &:hover {
+                    cursor: pointer;
+                }
             }
         }
     }
 
     .card-body {
+        .delete-alert {
+            padding: 7px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .left {
+                i.bi {
+                    margin-right: 12px;
+                }
+            }
+
+            .right {
+                ul {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 0;
+                    list-style: none;
+
+                    li {
+                        margin-right: 15px;
+
+                        &:last-child {
+                            margin-right: 0;
+                        }
+
+                        &:hover {
+                            cursor: pointer;
+                        }
+                    }
+                }
+            }
+        }
+
         .post_card_footer {
             float: right;
             margin-bottom: 0;

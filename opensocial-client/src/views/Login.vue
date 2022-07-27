@@ -11,7 +11,7 @@
             <form v-on:submit="authUser($event)">
                 <div class="mb-3">
                     <label for="email" class="form-label">Почта</label>
-                    <input type="email" class="form-control" v-model="loginData.email" id="email" required aria-describedby="emailHelp">
+                    <input type="email" class="form-control" v-model="loginData.email" id="email" required>
                     <div id="emailHelp" class="form-text">Почта не передается третьим лицам</div>
                 </div>
                 <div class="mb-3">
@@ -36,6 +36,40 @@
             <div class="section_navigator">
                 <h2><span @click="this.currentSection = 'login'"><i class="bi bi-arrow-left"></i></span> Регистрация</h2>
             </div>
+            <form>
+                <div class="my-3">
+                    <label class="form-label">Ваша почта</label>
+                    <input type="email" class="form-control" v-model="registerData.email" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Пароль</label>
+                    <input type="password" class="form-control" v-model="registerData.password" minlength="8" maxlength="32" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Имя</label>
+                    <input type="text" class="form-control" v-model="registerData.first_name" minlength="2" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Фамилия</label>
+                    <input type="text" class="form-control" v-model="registerData.last_name" minlength="2" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Гендер</label>
+                    <select class="form-select" v-model="registerData.gender" required>
+                        <option value="1">Девочка</option>
+                        <option value="2">Мальчик</option>
+                    </select>
+                </div>
+                <div class="mb-4 form-check">
+                    <input type="checkbox" class="form-check-input" required v-model="loginData.wantToReg" id="wantToLogin">
+                    <label class="form-check-label" for="wantToLogin">Хочу зарегистрироваться</label>
+                </div>
+                <button type="submit" class="btn btn-primary" v-if="!registeringData.isLoading" :disabled="registerData.wantToReg">Регистрация</button>
+                <button class="btn btn-primary" v-else type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Регистрация
+                </button>
+            </form>
         </div>
     </div>
 </template>
@@ -51,9 +85,20 @@ export default {
                 password: "",
                 wantToLogin: false
             },
+            registerData: {
+                email: "",
+                password: "",
+                first_name: "",
+                last_name: "",
+                gender: null,
+                wantToReg: false
+            },
             loggingData: {
                 isLoading: false,
                 incorrectPassword: false
+            },
+            registeringData: {
+                isLoading: false
             },
             currentSection: "login"
         }
