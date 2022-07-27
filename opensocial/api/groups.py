@@ -16,19 +16,64 @@ class Groups(BaseModel):
     avatar = CharField(4096, null=True)
     meta = JSONField(null=True)
 
-    def getJSON(self, advanced=False):
+    def getJSON(self, advanced=False, access_token=None):
+        from opensocial.api.subscribers import Subscribers
+
+        user = Accounts.get_or_none(Accounts.access_token == access_token)
+        isUserHaveSpecialPermissions = Subscribers.get_or_none(Subscribers.subscriber == user & Subscribers.subscribed_at == Groups.get(Groups.group_id == self.group_id))
+
         json_object = {
             'group_id': self.group_id,
             'group_name': self.group_name,
             'group_status': self.group_status if self.group_status else None,
             'meta': self.meta if self.meta else None,
-            'avatar_url': self.avatar
+            'avatar_url': self.avatar,
+            'perms': {
+                'specialRole': False,
+                'status': 'user'
+            }
         }
 
         if advanced:
-            json_object['posts'] = [post.getJSON() for post in self.posts]
+            json_object['posts'] = [post.getJSON(access_token=access_token) for post in self.posts]
+
+        if user != None and (isUserHaveSpecialPermissions != None and isUserHaveSpecialPermissions.status != 'user'):
+            json_object['perms'] = {
+                'specialRole': True,
+                'status': isUserHaveSpecialPermissions.status
+            }
         
         return json_object
+
+    def searchGroup(access_token, query):
+        searchGroupErrors = [
+            'invalid_token',
+            'short_query'
+        ]
+
+        groups_array = []
+        
+        if Accounts.isValidAccessToken(access_token):
+            if len(query) > 0:
+                group_query = Groups.select().where(Groups.group_name.contains(query) & Groups.group_type != 'local' | Groups.group_type != 'closed').limit(25)
+
+                if group_query.exists():
+                    for group in group_query:
+                        groups_array.append(group.getJSON(access_token=access_token))
+
+                    return {
+                        'success': True,
+                        'data': groups_array
+                    }
+                else:
+                    return {
+                        'success': True,
+                        'data': groups_array
+                    }
+            else:
+                return UtilitiesAPI.errorJson(searchGroupErrors[1])
+        else:
+            return UtilitiesAPI.errorJson(searchGroupErrors[0])
 
     def getGroup(access_token, group_id):
         from opensocial.api.subscribers import Subscribers
@@ -53,7 +98,7 @@ class Groups(BaseModel):
                     )
 
                     if is_user_subscribed != None:
-                        return target_group.getJSON()
+                        return target_group.getJSON(access_token=access_token)
                     else:
                         if target_group.group_type == 'local':
                             return UtilitiesAPI.errorJson(getGroupErrors[2])

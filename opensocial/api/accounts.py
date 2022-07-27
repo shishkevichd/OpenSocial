@@ -108,7 +108,7 @@ class Accounts(BaseModel):
                     group_posts = group.subscribed_at.posts
 
                     for group_post in group_posts:
-                        posts_array.append(group_post.getJSON())
+                        posts_array.append(group_post.getJSON(access_token=access_token))
 
             friends_post = Friends.select().where((Friends.first_friend == Accounts.get(Accounts.access_token == access_token)) | (Friends.second_friend == Accounts.get(Accounts.access_token == access_token)))
 
@@ -120,12 +120,12 @@ class Accounts(BaseModel):
                         friend_posts = friend.first_friend.posts
 
                     for friend_post in friend_posts:
-                        posts_array.append(friend_post.getJSON())
+                        posts_array.append(friend_post.getJSON(access_token=access_token))
 
             your_posts = Accounts.get(Accounts.access_token == access_token).posts
 
             for post in your_posts:
-                posts_array.append(post.getJSON())
+                posts_array.append(post.getJSON(access_token=access_token))
 
             return {
                 'success': True,
@@ -141,8 +141,8 @@ class Accounts(BaseModel):
         ]
 
         if Accounts.isValidAccessToken(access_token):
-            if user_id:
-                requested_user = Accounts.get(Accounts.user_id == user_id)
+            if len(user_id) > 0:
+                requested_user = Accounts.get_or_none(Accounts.user_id == user_id)
             
                 if requested_user == None:
                     return UtilitiesAPI.errorJson(getUserErrors[1])
@@ -159,7 +159,7 @@ class Accounts(BaseModel):
         else:
             return UtilitiesAPI.errorJson(getUserErrors[0])
 
-    def getSubscribedGroup(access_token):
+    def getSubscribedGroup(access_token, user_id=None):
         from opensocial.api.subscribers import Subscribers
 
         getSubscribedGroupErrors = [
@@ -167,13 +167,18 @@ class Accounts(BaseModel):
         ]
         
         if Accounts.isValidAccessToken(access_token):
-            user_groups = Subscribers.select(Subscribers.subscribed_at).where(Subscribers.subscriber == Accounts.get(Accounts.access_token == access_token))
+            target_user = Accounts.get_or_none(Accounts.user_id == user_id)
+
+            if target_user != None:
+                user_groups = Subscribers.select(Subscribers.subscribed_at).where(Subscribers.subscriber == Accounts.get(Accounts.user_id == user_id))
+            else:
+                user_groups = Subscribers.select(Subscribers.subscribed_at).where(Subscribers.subscriber == Accounts.get(Accounts.access_token == access_token))
 
             groups_array = []
 
             if user_groups.exists():
                 for group in user_groups:
-                    groups_array.append(group.subscribed_at.getJSON())
+                    groups_array.append(group.subscribed_at.getJSON(access_token=access_token))
 
                 return {
                     'success': True,

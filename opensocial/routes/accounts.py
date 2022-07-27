@@ -25,31 +25,6 @@ def AccountGet():
     params = request.json
     return Accounts.getUser(params['access_token'], params['user_id'])
 
-# Friends
-
-@AccountsRAPI.post('/sendFriendRequest')
-def AccountSendFriendRequestAPI():
-    params = request.json
-    return Friends.sendRequest(params['access_token'], params['user_id'])
-
-
-@AccountsRAPI.post('/acceptFriendRequest')
-def AccountAcceptFriendRequestAPI():
-    params = request.json
-    return Friends.acceptRequest(params['access_token'], params['user_id'])
-
-
-@AccountsRAPI.post('/declineFriendRequest')
-def AccountDeclineFriendRequestAPI():
-    params = request.json
-    return Friends.declineRequest(params['access_token'], params['user_id'])
-
-
-@AccountsRAPI.post('/deleteFriend')
-def AccountDeleteFriendAPI():
-    params = request.json
-    return Friends.deleteFromFriends(params['access_token'], params['user_id'])
-
 # Posts
 
 @AccountsRAPI.post('/getPosts')
@@ -80,34 +55,3 @@ def EditPostUserAPI():
 def GetPostCompilationAPI():
     params = request.json
     return Accounts.getPostCompilation(params['access_token'])
-
-# Messages
-
-@AccountsRAPI.post('/sendMessage')
-def SendMessageAPI():
-    params = request.json
-    return Dialogs.sendMessageTo(params['access_token'], params['user_id'], params['content'])
-
-
-@AccountsRAPI.post('/getDialog')
-def GetDialogAPI():
-    params = request.json
-    return Dialogs.getDialog(params['access_token'], params['dialog_id'])
-
-
-@AccountsRAPI.post('/getDialogs')
-def GetDialogsAPI():
-    params = request.json
-    return Dialogs.getDialogs(params['access_token'])
-
-
-@AccountsRAPI.post('/editMessage')
-def EditMessageAPI():
-    params = request.json
-    return Dialogs.editMessage(params['access_token'], params['message_id'], params['content'])
-
-
-@AccountsRAPI.post('/deleteMessage')
-def DeleteMessageAPI():
-    params = request.json
-    return Dialogs.deleteMessage(params['access_token'], params['message_id'])

@@ -54,6 +54,12 @@ def GroupsDeleteSubscriberFromGroupAPI():
     return Groups.deleteSubscriberFromGroup(params['access_token'], params['group_id'], params['user_id'])
 
 
+@GroupsRAPI.post('/searchGroups')
+def SearchGroupsAPI():
+    params = request.json
+    return Groups.searchGroup(params['access_token'], params['query'])
+
+
 @GroupsRAPI.post('/getGroup')
 def GroupsGetAPI():
     params = request.json
@@ -63,4 +69,4 @@ def GroupsGetAPI():
 @GroupsRAPI.post('/getSubscribedGroup')
 def GetSubscribedGroupGroups():
     params = request.json
-    return Accounts.getSubscribedGroup(params['access_token'])
+    return Accounts.getSubscribedGroup(params['access_token'], params['user_id'])

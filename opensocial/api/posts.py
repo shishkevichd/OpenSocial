@@ -21,7 +21,7 @@ class Posts(BaseModel):
     is_edited = BooleanField(default=False, null=True)
     edit_time = DateTimeField(default=None, null=True)
 
-    def getJSON(self):
+    def getJSON(self, access_token=None):
         jsonObject = {
             'post_id': self.post_id,
             'content': self.content,
@@ -42,7 +42,7 @@ class Posts(BaseModel):
         else:
             jsonObject['creator'] = {
                 'creator_type': 'group',
-                'data': self.group_creator.getJSON()
+                'data': self.group_creator.getJSON(access_token=access_token)
             }
 
         return jsonObject
