@@ -199,7 +199,7 @@ class Accounts(BaseModel):
                     group_posts = group.subscribed_at.posts
 
                     for group_post in group_posts:
-                        posts_array.append(group_post.getJSON(access_token=access_token))
+                        posts_array.append(group_post.getJSON())
 
             friends_post = Friends.select().where((Friends.first_friend == Accounts.get(Accounts.access_token == access_token)) | (Friends.second_friend == Accounts.get(Accounts.access_token == access_token)))
 
@@ -211,12 +211,12 @@ class Accounts(BaseModel):
                         friend_posts = friend.first_friend.posts
 
                     for friend_post in friend_posts:
-                        posts_array.append(friend_post.getJSON(access_token=access_token))
+                        posts_array.append(friend_post.getJSON())
 
             your_posts = Accounts.get(Accounts.access_token == access_token).posts
 
             for post in your_posts:
-                posts_array.append(post.getJSON(access_token=access_token))
+                posts_array.append(post.getJSON())
 
             return {
                 'success': True,
@@ -286,7 +286,7 @@ class Accounts(BaseModel):
     # ===================================
     # Checker
     # ===================================
-    
+
     def isValidAccessToken(target_access_token):
         requested_user = Accounts.get_or_none(Accounts.access_token == target_access_token)
 

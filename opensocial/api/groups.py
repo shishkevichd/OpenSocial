@@ -248,32 +248,17 @@ class Groups(BaseModel):
     # Gets
     # ===================================
 
-    def getJSON(self, advanced=False, access_token=None):
-        from opensocial.api.subscribers import Subscribers
-
-        user = Accounts.get_or_none(Accounts.access_token == access_token)
-        isUserHaveSpecialPermissions = Subscribers.get_or_none(Subscribers.subscriber == user & Subscribers.subscribed_at == Groups.get(Groups.group_id == self.group_id))
-
+    def getJSON(self, advanced=False):
         json_object = {
             'group_id': self.group_id,
             'group_name': self.group_name,
             'group_status': self.group_status if self.group_status else None,
             'meta': self.meta if self.meta else None,
-            'avatar_url': self.avatar,
-            'perms': {
-                'specialRole': False,
-                'status': 'user'
-            }
+            'avatar_url': self.avatar
         }
 
         if advanced:
-            json_object['posts'] = [post.getJSON(access_token=access_token) for post in self.posts]
-
-        if user != None and (isUserHaveSpecialPermissions != None and isUserHaveSpecialPermissions.status != 'user'):
-            json_object['perms'] = {
-                'specialRole': True,
-                'status': isUserHaveSpecialPermissions.status
-            }
+            json_object['posts'] = [post.getJSON() for post in self.posts]
         
         return json_object
 

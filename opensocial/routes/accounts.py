@@ -28,6 +28,7 @@ def AccountGet():
 # Posts
 
 @AccountsRAPI.post('/getPosts')
+@AccountsRAPI.post('/getUserPosts')
 def GetPostsAPI():
     params = request.json
     return Accounts.getUserPosts(params['access_token'], params['user_id'])

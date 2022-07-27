@@ -19,18 +19,23 @@ class Posts(BaseModel):
     user_creator = ForeignKeyField(Accounts, backref='posts', null=True)
     post_id = CharField(16)
     is_edited = BooleanField(default=False, null=True)
+    enabled_comments = BooleanField(default=True)
     edit_time = DateTimeField(default=None, null=True)
 
     # ===================================
     # Gets
     # ===================================
 
-    def getJSON(self, access_token=None):
+    def getJSON(self):
         jsonObject = {
             'post_id': self.post_id,
             'content': self.content,
-            'create_datetime': self.create_date
+            'create_datetime': self.create_date,
+            'likes_count': len(self.likes),
         }
+
+        if self.enabled_comments:
+            jsonObject['comments'] = [comment.getJSON() for comment in self.comments]
 
         if self.is_edited:
             jsonObject['editData'] = {
@@ -46,7 +51,7 @@ class Posts(BaseModel):
         else:
             jsonObject['creator'] = {
                 'creator_type': 'group',
-                'data': self.group_creator.getJSON(access_token=access_token)
+                'data': self.group_creator.getJSON()
             }
 
         return jsonObject
