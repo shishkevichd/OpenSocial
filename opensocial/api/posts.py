@@ -21,6 +21,10 @@ class Posts(BaseModel):
     is_edited = BooleanField(default=False, null=True)
     edit_time = DateTimeField(default=None, null=True)
 
+    # ===================================
+    # Gets
+    # ===================================
+
     def getJSON(self, access_token=None):
         jsonObject = {
             'post_id': self.post_id,
@@ -46,6 +50,10 @@ class Posts(BaseModel):
             }
 
         return jsonObject
+
+    # ===================================
+    # Post manage
+    # ===================================
 
     def createPost(type, **data):
         if type == 'group':

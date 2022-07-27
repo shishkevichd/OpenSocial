@@ -15,6 +15,10 @@ class Notes(BaseModel):
     note_id = CharField(50)
     is_edited = BooleanField(default=False)
 
+    # ===================================
+    # Gets
+    # ===================================
+
     def getJSON(self, advanced=False):
         json_object = {
             'note_id': self.note_id,
@@ -27,29 +31,6 @@ class Notes(BaseModel):
             json_object['content'] = self.content
 
         return json_object
-
-    def newNote(access_token, content):
-        newNoteErrors = [
-            "invalid_token",
-            "short_conten"
-        ]
-
-        if Accounts.isValidAccessToken(access_token):
-            if len(content) >= 1:
-                new_note_id = secrets.token_hex(25)
-
-                Notes.create(creator=Accounts.get(Accounts.access_token == access_token), content=content, note_id=new_note_id)
-
-                return {
-                    'status': True,
-                    'data': {
-                        'note_id': new_note_id
-                    }
-                }
-            else:
-                return UtilitiesAPI.errorJson(newNoteErrors[1])
-        else:
-            return UtilitiesAPI.errorJson(newNoteErrors[0])
 
     def getNote(access_token, note_id):
         getNoteErrors = [
@@ -92,6 +73,33 @@ class Notes(BaseModel):
             }
         else:
             return UtilitiesAPI.errorJson(getNotesErrors[0])
+
+    # ===================================
+    # Note manage
+    # ===================================
+
+    def newNote(access_token, content):
+        newNoteErrors = [
+            "invalid_token",
+            "short_conten"
+        ]
+
+        if Accounts.isValidAccessToken(access_token):
+            if len(content) >= 1:
+                new_note_id = secrets.token_hex(25)
+
+                Notes.create(creator=Accounts.get(Accounts.access_token == access_token), content=content, note_id=new_note_id)
+
+                return {
+                    'status': True,
+                    'data': {
+                        'note_id': new_note_id
+                    }
+                }
+            else:
+                return UtilitiesAPI.errorJson(newNoteErrors[1])
+        else:
+            return UtilitiesAPI.errorJson(newNoteErrors[0])
 
     
     def editNote(access_token, note_id, content):

@@ -21,13 +21,104 @@ class Accounts(BaseModel):
     gender = IntegerField(null=False)
     access_token = TextField(null=False)
 
-    def isValidAccessToken(target_access_token):
-        requested_user = Accounts.get_or_none(Accounts.access_token == target_access_token)
+    # ===================================
+    # Auth
+    # ===================================
 
-        if requested_user == None:
-            return False
+    def login(user_email, user_password):
+        loginErrors = [
+            "incorrect_password_or_email"
+        ]
+
+        searchable_user = Accounts.get_or_none(Accounts.email == user_email)
+
+        if searchable_user != None:
+            if check_password_hash(searchable_user.password, user_password):
+                return {
+                    'success': True,
+                    'data': {
+                        'access_token': searchable_user.access_token,
+                        'user_id': searchable_user.user_id
+                    }
+                }  
+            else:
+                return UtilitiesAPI.errorJson(loginErrors[0])
         else:
-            return True
+            return UtilitiesAPI.errorJson(loginErrors[0])
+
+    def register(user_email, user_password, first_name, last_name, gender):
+        registerErrors = [
+            "incorrect_account_email",
+            "incorrect_account_password",
+            "incorrect_first_and_last_name",
+            "incorrect_gender",
+            "this_mail_already_exists"
+        ]
+
+        email_regex = r"^((\w[^\W]+)[\.\-]?){1,}\@(([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$"
+        
+        is_email_already_exists = Accounts.get_or_none(Accounts.email == user_email)
+
+        if is_email_already_exists == None:
+            if bool(re.search(email_regex, user_email)):
+                if UtilitiesAPI.password_check(user_password):
+                    if len(first_name) > 2 and len(last_name) > 2:
+                        if int(gender) == 1 or int(gender) == 2:
+                            new_user_id = secrets.token_hex(8)
+                            
+                            Accounts.create(
+                                email=user_email, 
+                                password=generate_password_hash(user_password), 
+                                first_name=first_name,
+                                last_name=last_name,
+                                gender=gender,
+                                access_token=secrets.token_hex(24),
+                                user_id=new_user_id,
+                                avatar=f"https://avatars.dicebear.com/api/identicon/{new_user_id}.svg"
+                            )
+
+                            new_user = Accounts.get(Accounts.user_id == new_user_id)
+
+                            return {
+                                'success': True,
+                                'data': {
+                                    'access_token': new_user.access_token,
+                                    'user_id': new_user.user_id
+                                }
+                            }
+                        else:
+                            return UtilitiesAPI.errorJson(registerErrors[3])
+                    else:
+                        return UtilitiesAPI.errorJson(registerErrors[2])
+                else:
+                    return UtilitiesAPI.errorJson(registerErrors[1])
+            else:
+                return UtilitiesAPI.errorJson(registerErrors[0])
+        else:
+            return UtilitiesAPI.errorJson(registerErrors[4])
+
+    # ===================================
+    # Posts
+    # ===================================
+
+    def createPost(access_token, content):
+        from opensocial.api.posts import Posts
+
+        return Posts.createPost(type='user', access_token=access_token, content=content)
+
+    def deletePost(access_token, post_id):
+        from opensocial.api.posts import Posts
+
+        return Posts.deletePost(type='user', access_token=access_token, post_id=post_id)
+
+    def editPost(access_token, post_id, content):
+        from opensocial.api.posts import Posts
+
+        return Posts.editPost(type='user', access_token=access_token, post_id=post_id, content=content)
+
+    # ===================================
+    # Gets
+    # ===================================
 
     def getJSON(self, advanced=False):
         json_object = {
@@ -191,90 +282,15 @@ class Accounts(BaseModel):
                 }
         else:
             return UtilitiesAPI.errorJson(getSubscribedGroupErrors[0])
-
-    def login(user_email, user_password):
-        loginErrors = [
-            "incorrect_password_or_email"
-        ]
-
-        searchable_user = Accounts.get_or_none(Accounts.email == user_email)
-
-        if searchable_user != None:
-            if check_password_hash(searchable_user.password, user_password):
-                return {
-                    'success': True,
-                    'data': {
-                        'access_token': searchable_user.access_token,
-                        'user_id': searchable_user.user_id
-                    }
-                }  
-            else:
-                return UtilitiesAPI.errorJson(loginErrors[0])
-        else:
-            return UtilitiesAPI.errorJson(loginErrors[0])
-
-    def register(user_email, user_password, first_name, last_name, gender):
-        registerErrors = [
-            "incorrect_account_email",
-            "incorrect_account_password",
-            "incorrect_first_and_last_name",
-            "incorrect_gender",
-            "this_mail_already_exists"
-        ]
-
-        email_regex = r"^((\w[^\W]+)[\.\-]?){1,}\@(([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$"
         
-        is_email_already_exists = Accounts.get_or_none(Accounts.email == user_email)
+    # ===================================
+    # Checker
+    # ===================================
+    
+    def isValidAccessToken(target_access_token):
+        requested_user = Accounts.get_or_none(Accounts.access_token == target_access_token)
 
-        if is_email_already_exists == None:
-            if bool(re.search(email_regex, user_email)):
-                if UtilitiesAPI.password_check(user_password):
-                    if len(first_name) > 2 and len(last_name) > 2:
-                        if int(gender) == 1 or int(gender) == 2:
-                            new_user_id = secrets.token_hex(8)
-                            
-                            Accounts.create(
-                                email=user_email, 
-                                password=generate_password_hash(user_password), 
-                                first_name=first_name,
-                                last_name=last_name,
-                                gender=gender,
-                                access_token=secrets.token_hex(24),
-                                user_id=new_user_id,
-                                avatar=f"https://avatars.dicebear.com/api/identicon/{new_user_id}.svg"
-                            )
-
-                            new_user = Accounts.get(Accounts.user_id == new_user_id)
-
-                            return {
-                                'success': True,
-                                'data': {
-                                    'access_token': new_user.access_token,
-                                    'user_id': new_user.user_id
-                                }
-                            }
-                        else:
-                            return UtilitiesAPI.errorJson(registerErrors[3])
-                    else:
-                        return UtilitiesAPI.errorJson(registerErrors[2])
-                else:
-                    return UtilitiesAPI.errorJson(registerErrors[1])
-            else:
-                return UtilitiesAPI.errorJson(registerErrors[0])
+        if requested_user == None:
+            return False
         else:
-            return UtilitiesAPI.errorJson(registerErrors[4])
-
-    def createPost(access_token, content):
-        from opensocial.api.posts import Posts
-
-        return Posts.createPost(type='user', access_token=access_token, content=content)
-
-    def deletePost(access_token, post_id):
-        from opensocial.api.posts import Posts
-
-        return Posts.deletePost(type='user', access_token=access_token, post_id=post_id)
-
-    def editPost(access_token, post_id, content):
-        from opensocial.api.posts import Posts
-
-        return Posts.editPost(type='user', access_token=access_token, post_id=post_id, content=content)
+            return True

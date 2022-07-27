@@ -12,6 +12,10 @@ class Dialogs(BaseModel):
     receiver = ForeignKeyField(Accounts)
     dialog_id = CharField(10)
 
+    # ===================================
+    # Gets
+    # ===================================
+
     def getMessages(self):
         return Messages.select().where(Messages.to_dialog == self).order_by(Messages.send_date.asc())
 
@@ -87,6 +91,10 @@ class Dialogs(BaseModel):
                 return UtilitiesAPI.errorJson(getDialogsErrors[1])
         else:
             return UtilitiesAPI.errorJson(getDialogsErrors[0])
+    
+    # ===================================
+    # Message manage
+    # ===================================
 
     def deleteMessage(access_token, message_id):
         deleteMessageErrors = [
@@ -202,6 +210,10 @@ class Messages(BaseModel):
     to_dialog = ForeignKeyField(Dialogs, backref="messages")
     message_id = CharField(16)
 
+    # ===================================
+    # Gets
+    # ===================================
+
     def getJSON(self):
         jsonObject = {
             "sender": self.sender.getJSON(),
@@ -217,6 +229,10 @@ class Messages(BaseModel):
             }
         
         return jsonObject
+
+    # ===================================
+    # Message manage
+    # ===================================
 
     def deleteMessage(self):
         return self.delete_instance()
