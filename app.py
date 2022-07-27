@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
-from opensocial.main import MainAPI
+from opensocial.server import MainServerAPI
+from opensocial.client.client import MainClientAPI
 from opensocial.utilities import UtilitiesAPI
 from opensocial.config import ConfigAPI
 
@@ -11,7 +12,8 @@ app = Flask(__name__)
 CORS(app=app, resources={r"/api/*": {"origins": "*"}})
 
 # Register API Blueprint
-app.register_blueprint(MainAPI)
+app.register_blueprint(MainServerAPI)
+app.register_blueprint(MainClientAPI)
 
 
 # Start application
