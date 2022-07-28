@@ -1,0 +1,117 @@
+@import url('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
+
+// Services
+.material-symbols-outlined {
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24
+}
+
+
+// Navbar
+.social_navbar {
+    background-color: #1d1d1d;
+    width: 100%;
+
+    .container {
+        .social_navbar_container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+    
+            .social_navbar_left {
+                padding: 12px 0;
+                span.social_navbar_header {
+                    color: white;
+                    font-weight: 600;
+                }
+            }
+    
+            .social_navbar_right {
+                color: whitesmoke;
+                list-style: none;
+                margin: 0;
+                display: flex;
+
+                .navbar_icon {
+                    margin-right: 20px;
+
+                    &:last-child {
+                        margin-right: 0;
+                    }
+
+                    > a {
+                        color: whitesmoke;
+                        display: flex;
+                        align-items: center;
+
+                        span.material-symbols-outlined {
+                            font-size: 20px;
+                            margin-right: 5px;
+                        }
+
+                        @media screen and (max-width: 767px) {
+                            span.text {
+                                display: none;
+                            }
+
+                            span.material-symbols-outlined {
+                                margin-right: 0;
+                            }
+                        }
+
+                        &:hover {
+                            color: darken($color: whitesmoke, $amount: 15);
+                            text-decoration: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.social_mobile_icons {
+    background-color: #1d1d1d;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    margin: 0;
+    padding: 10px 15px;
+    color: whitesmoke;
+
+    .mobile_icon {
+        display: flex;
+        text-align: center;
+        flex-direction: column;
+
+        .mobile_icon_subtext {
+            font-size: 9pt;
+            display: none;
+        }
+    }
+
+    @media screen and (min-width: 425px) {
+        & {
+            justify-content: space-evenly;
+
+            .mobile_icon {
+                .mobile_icon_subtext {
+                    margin-top: 2spx;
+                    display: block;
+                }
+            }
+        }
+    }
+
+    @media screen and (min-width: 767px) {
+        & {
+            display: none;
+        }
+    }
+}

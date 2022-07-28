@@ -8,7 +8,7 @@ from opensocial.config import ConfigAPI
 
 # Init app
 app = Flask(__name__)
-
+app.secret_key = ConfigAPI.secret_key
 CORS(app=app, resources={r"/api/*": {"origins": "*"}})
 
 # Register API Blueprint

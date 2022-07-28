@@ -5,3 +5,4 @@ class ConfigAPI:
         'port': 8000,
         'debug': True
     }
+    secret_key = "testkey"
