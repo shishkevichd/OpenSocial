@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenSocial</title>
+
+    <link rel="stylesheet" href="{{ url_for('MainClientAPI.static', filename='index.css') }}">
+</head>
+<body>
+    <div class="social_application">
+        <div class="social_navbar">
+            <div class="container">
+                <div class="social_navbar_container">
+                    <div class="social_navbar_left">
+                        <span class="social_navbar_header">
+                            OpenSocial
+                        </span>
+                    </div>
+                    <ul class="social_navbar_right">
+                        <li class="navbar_icon">
+                            <a href="/logout"><span class="material-symbols-outlined">logout</span> <span class="text">Выйти</span></a>
+                        </li>
+                        <li class="navbar_icon">
+                            <a href="/user"><span class="material-symbols-outlined">person</span> <span class="text">Профиль</span></a>
+                        </li>
+                    </il>
+                </div>
+            </div>
+        </div>
+        <div class="social_mobile_tabs">
+            <ul class="social_mobile_icons">
+                <li class="mobile_icon">
+                    <span class="material-symbols-outlined">home</span>
+                    <span class="mobile_icon_subtext">Новости</span>
+                </li>
+                <li class="mobile_icon">
+                    <span class="material-symbols-outlined">group</span>
+                    <span class="mobile_icon_subtext">Друзья</span>
+                </li>
+                <li class="mobile_icon">
+                    <span class="material-symbols-outlined">forum</span>
+                    <span class="mobile_icon_subtext">Чаты</span>
+                </li>
+                <li class="mobile_icon">
+                    <span class="material-symbols-outlined">groups</span>
+                    <span class="mobile_icon_subtext">Группы</span>
+                </li>
+                <li class="mobile_icon">
+                    <span class="material-symbols-outlined">menu</span>
+                    <span class="mobile_icon_subtext">Другое</span>
+                </li>
+            </ul>
+        </div>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</body>
+</html>

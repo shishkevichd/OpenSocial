@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenSocial</title>
+
+    <link rel="stylesheet" href="{{ url_for('MainClientAPI.static', filename='index.css') }}">
+</head>
+<body>
+    <div class="social_application">
+        <div class="social_navbar">
+            <div class="container">
+                <div class="social_navbar_container">
+                    <div class="social_navbar_left">
+                        <span class="social_navbar_header">
+                            OpenSocial
+                        </span>
+                    </div>
+                    <ul class="social_navbar_right">
+                        <li class="navbar_icon">
+                            <a href="/login"><span class="material-symbols-outlined">login</span> <span class="text">Войти</span></a>
+                        </li>
+                        <li class="navbar_icon">
+                            <a href="/reg"><span class="material-symbols-outlined">person_add</span> <span class="text">Регистрация</span></a>
+                        </li>
+                    </il>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</body>
+</html>

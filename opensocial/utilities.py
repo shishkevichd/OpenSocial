@@ -18,7 +18,7 @@ class UtilitiesAPI:
             database.create_tables([Accounts, Friends, Notes, Groups, Subscribers, Posts, Dialogs, Messages, Commentaries, Likes])
 
     def errorJson(reason):
-        return { "status": False, "why": reason }, 400
+        return { "success": False, "why": reason }, 400
     
     def password_check(password):     
         if len(password) < 6 or len(password) > 20 or not any(char.isdigit() for char in password):

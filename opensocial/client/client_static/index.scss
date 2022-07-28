@@ -115,3 +115,31 @@
         }
     }
 }
+
+@for $var from 1 to 6 {
+    .mt-#{$var} {
+        margin-top: 1rem * $var;
+    }
+
+    .mb-#{$var} {
+        margin-bottom: 1rem * $var;
+    }
+
+    .ml-#{$var} {
+        margin-left: 1rem * $var;
+    }
+
+    .mr-#{$var} {
+        margin-right: 1rem * $var;
+    }
+
+    .mx-#{$var} {
+        margin-left: 1rem * $var;
+        margin-right: 1rem * $var;
+    }
+
+    .my-#{$var} {
+        margin-top: 1rem * $var;
+        margin-bottom: 1rem * $var;
+    }
+}

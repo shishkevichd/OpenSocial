@@ -1,0 +1,32 @@
+{% extends 'template/unlogged_template.html' %}
+
+{% block content %}
+{% with messages = get_flashed_messages() %}
+    {% for message in messages %}
+    <div class="alert alert-danger mt-3">
+        <strong>Ошибка!</strong> {{ message }}
+    </div>
+    {% endfor %}
+{% endwith %}
+<h1>Войти</h1>
+<form action="/login" method="post">
+    <div class="form-group">
+        <label class="control-label" for="inputSmall">Почта</label>
+        <input class="form-control input-sm" name="email" type="email" required>
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="inputSmall">Пароль</label>
+        <input class="form-control input-sm" name="password" type="password" required minlength="8">
+    </div>
+    <div class="form-group">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="save_me"> Запомнить меня
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Войти</button>
+    </div>
+</form>
+{% endblock %}

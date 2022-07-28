@@ -40,7 +40,7 @@ class Accounts(BaseModel):
                         'access_token': searchable_user.access_token,
                         'user_id': searchable_user.user_id
                     }
-                }  
+                }, 200  
             else:
                 return UtilitiesAPI.errorJson(loginErrors[0])
         else:
@@ -85,7 +85,7 @@ class Accounts(BaseModel):
                                     'access_token': new_user.access_token,
                                     'user_id': new_user.user_id
                                 }
-                            }
+                            }, 200  
                         else:
                             return UtilitiesAPI.errorJson(registerErrors[3])
                     else:
@@ -133,7 +133,7 @@ class Accounts(BaseModel):
             json_object['join_date'] = self.join_date
             json_object['email'] = self.email
 
-        return json_object
+        return json_object, 200  
 
     def getUserPosts(access_token, user_id):
       getUserPostsErrors = [
@@ -155,12 +155,12 @@ class Accounts(BaseModel):
                     return {
                         'success': True,
                         'data': post_array
-                    }
+                    }, 200  
                 else:
                     return {
                         'success': True,
                         'data': post_array
-                    }
+                    }, 200  
             else:
                 return UtilitiesAPI.errorJson(getUserPostsErrors[1])
         else:
@@ -173,12 +173,12 @@ class Accounts(BaseModel):
                 return {
                     'success': True,
                     'data': post_array
-                }
+                }, 200  
             else:
                 return {
                     'success': True,
                     'data': post_array
-                }
+                }, 200  
       else:
         return UtilitiesAPI.errorJson(getUserPostsErrors[0])
 
@@ -221,7 +221,7 @@ class Accounts(BaseModel):
             return {
                 'success': True,
                 'data': posts_array
-            }
+            }, 200  
         else:
             return UtilitiesAPI.errorJson(getPostCompilationErrors[0])
 
@@ -241,12 +241,12 @@ class Accounts(BaseModel):
                     return {
                         'success': True,
                         'data': requested_user.getJSON()
-                    }
+                    }, 200  
             else:
                 return {
                     'success': True,
                     'data': Accounts.get(Accounts.access_token == access_token).getJSON(advanced=True)
-                }
+                }, 200  
         else:
             return UtilitiesAPI.errorJson(getUserErrors[0])
 
@@ -274,12 +274,12 @@ class Accounts(BaseModel):
                 return {
                     'success': True,
                     'data': groups_array
-                }
+                }, 200  
             else:
                 return {
                     'success': True,
                     'data': groups_array
-                }
+                }, 200  
         else:
             return UtilitiesAPI.errorJson(getSubscribedGroupErrors[0])
         
