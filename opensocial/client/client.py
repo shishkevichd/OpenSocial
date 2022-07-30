@@ -1,10 +1,15 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
 from functools import wraps
 
+from opensocial.client.forms.login import LoginForm
+from opensocial.client.forms.register import RegisterForm
+
+import json
 
 # ===================================
 # Init Application and Decorators
 # ===================================
+
 
 MainClientAPI = Blueprint(
     'MainClientAPI', 
@@ -18,11 +23,14 @@ MainClientAPI = Blueprint(
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        try:
-            if session['account_data'] is None:
-                return redirect(url_for('MainClientAPI.login'))
-        except KeyError:
+        from opensocial.api.accounts import Accounts
+        
+        if session.get('account_data') == None:
             return redirect(url_for('MainClientAPI.login'))
+        else:
+            check_token = Accounts.isValidAccessToken(session.get('account_data')['access_token'])
+            if not check_token:
+                return redirect(url_for('MainClientAPI.login'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -30,44 +38,69 @@ def login_required(f):
 # ===================================
 # Routes: Main
 # ===================================
+
+
 @MainClientAPI.route('/')
 @login_required
-def index():
+def home():
     return render_template('index.html')
+
+
+@MainClientAPI.route('/register', methods=['POST', 'GET'])
+def register():
+    form = RegisterForm()
+
+    if form.validate_on_submit():
+        from opensocial.api.accounts import Accounts
+
+        register_request = Accounts.register(form.email.data, form.password.data, form.first_name.data, form.last_name.data, form.gender.data)
+
+        if register_request[0]['success']:
+            session['account_data'] = register_request[0]['data']
+            return redirect('/')
+        else:
+            flash('Не удалось зарегистрироваться')
+            return redirect('/register')
+
+    if session.get('account_data') == None:
+        return render_template('register.html', form=form)
+    else:
+        return redirect('/')
 
 
 @MainClientAPI.route('/login', methods=['POST', 'GET'])
 def login():
-    if request.method == 'POST':
+    form = LoginForm()
+    
+    if form.validate_on_submit():
         from opensocial.api.accounts import Accounts
 
         loginData = {
-            'email': request.form['email'],
-            'password': request.form['password']
+            'email': form.email.data,
+            'password': form.password.data,
+            'save_me': form.save_me.data
         }
 
         login_request = Accounts.login(loginData['email'], loginData['password'])
 
-        print(login_request)
-
         if login_request[0]['success']:
             session['account_data'] = login_request[0]['data']
-            session.permanent = False if request.form.get('save_me') == None else True
+            session.permanent = False if loginData['save_me'] == None else True
 
             return redirect('/')
         else:
             flash('Неверный логин или пароль')
             return redirect(url_for('MainClientAPI.login'))
+
+    if session.get('account_data') == None:
+        return render_template('login.html', form=form)
     else:
-        if session.get('account_data') == None:
-            return render_template('login.html')
-        else:
-            return redirect('/')
+        return redirect('/')
 
 
 @MainClientAPI.route('/logout')
 @login_required
-def test():
+def logout():
     try:
         session.pop('account_data')
         return redirect('/')

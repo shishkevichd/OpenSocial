@@ -62,7 +62,7 @@ class Accounts(BaseModel):
         if is_email_already_exists == None:
             if bool(re.search(email_regex, user_email)):
                 if UtilitiesAPI.password_check(user_password):
-                    if len(first_name) > 2 and len(last_name) > 2:
+                    if len(first_name) >= 2 and len(last_name) >= 2:
                         if int(gender) == 1 or int(gender) == 2:
                             new_user_id = secrets.token_hex(8)
                             

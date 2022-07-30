@@ -3,9 +3,9 @@
 {% block content %}
 {% if form.errors %}
     {% for error in form.errors %}
-    <div class="alert alert-danger mt-2">
-        <strong>Ошибка!</strong> {{ form.errors[error][0] }}
-    </div>
+        <div class="alert alert-danger mt-2">
+            <strong>Ошибка!</strong> {{ form.errors[error][0] }}
+        </div>
     {% endfor %}
 {% endif %}
 
@@ -15,9 +15,17 @@
     </div>
 {% endfor %}
 
-<h1>Войти</h1>
-<form action="/login" method="post">
+<h1>Регистрация</h1>
+<form action="/register" method="post">
     {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.first_name.label(class_="control-label") }}
+        {{ form.first_name(class_="form-control input-sm") }}
+    </div>
+    <div class="form-group">
+        {{ form.last_name.label(class_="control-label") }}
+        {{ form.last_name(class_="form-control input-sm") }}
+    </div>
     <div class="form-group">
         {{ form.email.label(class_="control-label") }}
         {{ form.email(class_="form-control input-sm") }}
@@ -27,9 +35,13 @@
         {{ form.password(class_="form-control input-sm") }}
     </div>
     <div class="form-group">
+        {{ form.gender.label(class_="control-label") }}
+        {{ form.gender(class_="form-control input-sm") }}
+    </div>
+    <div class="form-group">
         <div class="checkbox">
             <label>
-                {{ form.save_me }} {{ form.save_me.label.text }}
+                {{ form.agree_registration }} {{ form.agree_registration.label.text }}
             </label>
         </div>
     </div>
