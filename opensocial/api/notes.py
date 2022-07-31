@@ -46,7 +46,7 @@ class Notes(BaseModel):
 
             if target_note != None:
                 return {
-                    'status': True,
+                    'success': True,
                     'data': target_note.getJSON(advanced=True)
                 }
             else:
@@ -68,7 +68,7 @@ class Notes(BaseModel):
                 notes_array.append(note.getJSON())
 
             return {
-                'status': True,
+                'success': True,
                 'data': notes_array
             }
         else:
@@ -91,7 +91,7 @@ class Notes(BaseModel):
                 Notes.create(creator=Accounts.get(Accounts.access_token == access_token), content=content, note_id=new_note_id)
 
                 return {
-                    'status': True,
+                    'success': True,
                     'data': {
                         'note_id': new_note_id
                     }
@@ -123,7 +123,7 @@ class Notes(BaseModel):
                     target_note.save()
 
                     return {
-                        'status': True
+                        'success': True
                     }
                 else:
                     return UtilitiesAPI.errorJson(editNoteErrors[2])
@@ -148,7 +148,7 @@ class Notes(BaseModel):
                 target_note.delete_instance()
 
                 return {
-                    'status': True
+                    'success': True
                 }
             else:
                 return UtilitiesAPI.errorJson(deleteNoteErrors[1])

@@ -60,7 +60,7 @@ class Dialogs(BaseModel):
 
             if target_dialog != None:
                 return {
-                    'status': True,
+                    'success': True,
                     'data': target_dialog.getJSON(advanced=True, access_token=access_token)
                 }
             else:
@@ -109,7 +109,7 @@ class Dialogs(BaseModel):
                 target_message.deleteMessage()
 
                 return {
-                    'status': True
+                    'success': True
                 }
             else:
                 return UtilitiesAPI.errorJson(deleteMessageErrors[1])
@@ -135,7 +135,7 @@ class Dialogs(BaseModel):
                 target_message.save()
 
                 return {
-                    'status': True
+                    'success': True
                 }
             else:
                 return UtilitiesAPI.errorJson(editMessageErrors[2])
@@ -171,7 +171,7 @@ class Dialogs(BaseModel):
                         )
 
                         return {
-                            'status': True
+                            'success': True
                         }
                     else:
                         new_dialog_id = secrets.token_hex(5)
@@ -190,7 +190,7 @@ class Dialogs(BaseModel):
                         )
 
                         return {
-                            'status': True
+                            'success': True
                         }
                 else:
                     return UtilitiesAPI.errorJson(sendMessageErrors[2])

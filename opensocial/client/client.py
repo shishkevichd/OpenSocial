@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, session, redirect, url_for, flash
+from flask import Blueprint, render_template, session, redirect, url_for, flash
 from functools import wraps
 
 from opensocial.client.forms.login import LoginForm
@@ -35,15 +35,26 @@ def login_required(f):
     return decorated_function
 
 
-# ===================================
-# Routes: Main
-# ===================================
+@MainClientAPI.context_processor
+def context_processor():
+    def getUser(user_id=""):
+        from opensocial.api.accounts import Accounts
+
+        if len(user_id) != 0:
+            return Accounts.getUser("", user_id=user_id, without_token=True)[0]['data']
+        else:
+            return Accounts.getUser(session.get('account_data')['access_token'], "")[0]['data']
+    
+    def getPostComp():
+        from opensocial.api.accounts import Accounts
+        return Accounts.getPostCompilation(session.get('account_data')['access_token'])
+    
+    return dict(getUser=getUser, getPostComp=getPostComp)
 
 
-@MainClientAPI.route('/')
-@login_required
-def home():
-    return render_template('index.html')
+# ===================================
+# Routes: Account Managment
+# ===================================
 
 
 @MainClientAPI.route('/register', methods=['POST', 'GET'])
@@ -106,3 +117,21 @@ def logout():
         return redirect('/')
     except KeyError:
         return redirect('/')
+
+
+# ===================================
+# Routes: Account Managment
+# ===================================
+
+
+@MainClientAPI.route('/')
+@login_required
+def home():
+    return render_template('index.html')
+
+
+@MainClientAPI.route('/user', defaults={'user_id': ""})
+@MainClientAPI.route('/user/<user_id>')
+@login_required
+def profile(user_id):
+    return render_template('profile.html')

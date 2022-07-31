@@ -116,6 +116,56 @@
     }
 }
 
+// Profile Badge
+.social-profile-badge {
+    display: flex;
+
+    .avatar {
+        width: 81px;
+        margin-right: 20px;
+
+        @media screen and (min-width: 767px) {
+            & {
+                width: 128px;
+            }
+        }
+        
+        img {
+            border: 1px solid #1d1d1d15;
+            border-radius: 4px;
+        }
+    }
+
+    .meta {
+        h4 {
+            font-size: 22pt;
+            margin: 0;
+            margin-bottom: 8px;
+        }
+
+        .labels {
+            margin-bottom: 15px;
+        }
+    }
+}
+
+// Post
+.social_post {
+    .panel-heading {
+        display: flex;
+
+        .avatar {
+            width: 40px;
+            margin-right: 13px;
+        }
+
+        .meta {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}
+
 @for $var from 1 to 6 {
     .mt-#{$var} {
         margin-top: 1rem * $var;

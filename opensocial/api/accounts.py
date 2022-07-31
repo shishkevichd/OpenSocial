@@ -133,7 +133,7 @@ class Accounts(BaseModel):
             json_object['join_date'] = self.join_date
             json_object['email'] = self.email
 
-        return json_object, 200  
+        return json_object
 
     def getUserPosts(access_token, user_id):
       getUserPostsErrors = [
@@ -225,13 +225,13 @@ class Accounts(BaseModel):
         else:
             return UtilitiesAPI.errorJson(getPostCompilationErrors[0])
 
-    def getUser(access_token, user_id):
+    def getUser(access_token, user_id, without_token=False):
         getUserErrors = [
             "invalid_token",
             "user_not_found"
         ]
 
-        if Accounts.isValidAccessToken(access_token):
+        if Accounts.isValidAccessToken(access_token) or without_token:
             if len(user_id) > 0:
                 requested_user = Accounts.get_or_none(Accounts.user_id == user_id)
             

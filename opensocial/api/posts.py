@@ -91,7 +91,7 @@ class Posts(BaseModel):
                             )
 
                             return {
-                                'status': True,
+                                'success': True,
                                 'data': {
                                     'post_id': new_post_id,
                                     'group_id': target_group.group_id
@@ -124,7 +124,7 @@ class Posts(BaseModel):
                     )
 
                     return {
-                        'status': True,
+                        'success': True,
                         'data': {
                             'post_id': new_post_id
                         }
@@ -162,7 +162,7 @@ class Posts(BaseModel):
                             target_post.delete_instance()
 
                             return {
-                                'status': True
+                                'success': True
                             }
                         else:
                             return UtilitiesAPI.errorJson(deletePostErrors[3])
@@ -190,7 +190,7 @@ class Posts(BaseModel):
                     target_post.delete_instance()
 
                     return {
-                        'status': True
+                        'success': True
                     }
                 else:
                     return UtilitiesAPI.errorJson(deletePostErrors[1])
@@ -234,7 +234,7 @@ class Posts(BaseModel):
                                 target_post.save()
 
                                 return {
-                                    'status': True
+                                    'success': True
                                 }
                             else:
                                 return UtilitiesAPI.errorJson(editPostErrors[4])
@@ -270,7 +270,7 @@ class Posts(BaseModel):
                         target_post.save()
 
                         return {
-                            'status': True
+                            'success': True
                         }
                     else:
                         return UtilitiesAPI.errorJson(editPostErrors[2])

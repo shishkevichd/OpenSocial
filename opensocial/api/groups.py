@@ -45,7 +45,7 @@ class Groups(BaseModel):
                 )
 
                 return {
-                    'status': True
+                    'success': True
                 }
             else:
                 return UtilitiesAPI.errorJson(createGroupErrors[1])
@@ -103,7 +103,7 @@ class Groups(BaseModel):
                                 subscribedUser.delete_instance()
 
                                 return {
-                                    'status': True
+                                    'success': True
                                 }
                             else:
                                 return UtilitiesAPI.errorJson(deleteSubscriberFromGroupErrors[5])
@@ -154,7 +154,7 @@ class Groups(BaseModel):
                                 target_user_change.save()
 
                                 return {
-                                    'status': True
+                                    'success': True
                                 }
                             elif status == 'owner' and role_changer.status == 'owner':
                                 return UtilitiesAPI.errorJson(setUserGroupStatusErrors[5])
@@ -200,7 +200,7 @@ class Groups(BaseModel):
                     )
 
                     return {
-                        'status': True
+                        'success': True
                     }
                 else:
                     return UtilitiesAPI.errorJson(subscribeAtGroupErrors[2])
@@ -233,7 +233,7 @@ class Groups(BaseModel):
                         is_subscribed.delete_instance()
 
                         return {
-                            'status': True
+                            'success': True
                         }
                     else:
                         return UtilitiesAPI.errorJson(unsubscribeFromGroupErrors[3]) 

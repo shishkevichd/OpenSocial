@@ -1,5 +1,75 @@
 {% extends 'template/logged_template.html' %}
+{% from "components/post.html" import user_post with context %}
+
+{% set currentUser = getUser() %}
 
 {% block content %}
-<h1>Hello, User №{{ session['account_data'].user_id }}</h1>
+<div id="social_posts">
+    <div class="form-group my-2">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Что нового?" v-model="newPost.content">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="button" :disabled="newPost.content.length <= 0" @click="createNewPost()">Пост</button>
+            </span>
+        </div>
+    </div>
+    <div class="posts">
+        {{ user_post("postsCompilation") }}
+    </div>
+</div>
+
+<script>
+    const { createApp } = Vue
+
+    createApp({
+        data() {
+            return {
+                postsCompilation: [],
+                newPost: {
+                    content: ""
+                }
+            }
+        },
+        delimiters: ['[[', ']]'],
+        mounted() {
+            this.loadingPostCompilation()
+        },
+        methods: {
+            loadingPostCompilation() {
+                fetch(window.location.origin + '/api/users/getPostCompilation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        access_token: "{{ session['account_data']['access_token'] }}"
+                    }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        this.postsCompilation = data['data'].sort((a, b) => { return new Date(b.create_datetime) - new Date(a.create_datetime); })
+                    })
+            },
+            createNewPost() {
+                fetch(window.location.origin + '/api/users/createPost', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        access_token: "{{ session['account_data']['access_token'] }}",
+                        content: this.newPost.content
+                    }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data['success']) {
+                            this.newPost.content = ""
+                            this.loadingPostCompilation()
+                        }
+                    })
+            }
+        }
+    }).mount('#social_posts')
+</script>
 {% endblock %}

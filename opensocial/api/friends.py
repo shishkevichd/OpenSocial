@@ -44,7 +44,7 @@ class Friends(BaseModel):
                             )
 
                             return {
-                                'status': True
+                                'success': True
                             }
                         else:
                             return UtilitiesAPI.errorJson(sendRequestErrors[3])
@@ -82,7 +82,7 @@ class Friends(BaseModel):
                         target_friend_request.save()
 
                         return {
-                            'status': True
+                            'success': True
                         }
                     else:
                         return UtilitiesAPI.errorJson(acceptRequestErrors[3])
@@ -118,7 +118,7 @@ class Friends(BaseModel):
                         target_friend_request.save()
 
                         return {
-                            'status': True
+                            'success': True
                         }
                     else:
                         return UtilitiesAPI.errorJson(declineRequestErrors[3])

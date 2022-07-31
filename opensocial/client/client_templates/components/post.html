@@ -1,0 +1,17 @@
+{% macro user_post(arrayName="posts") -%}
+<div class="panel panel-default social_post" v-for="post in {{ arrayName }}">
+    <div class="panel-heading" v-if="post.creator.creator_type == 'user'">
+        <div class="avatar">
+            <img :src="post.creator.data.avatar_url" alt="Avatar">
+        </div>
+        <div class="meta">
+            <span>[[ post.creator.data.full_name ]]</span>
+            <span style="color: #a8a8a8;"> [[ post.create_datetime ]]</span>
+        </div>
+    </div>
+    <div class="panel-heading" v-else>[[ post.creator.data.group_name ]] <span style="color: #a8a8a8;"> [[ post.create_datetime ]]</span></div>
+    <div class="panel-body">
+        [[ post.content ]]
+    </div>
+</div>
+{%- endmacro %}

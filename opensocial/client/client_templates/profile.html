@@ -1,0 +1,24 @@
+{% extends 'template/logged_template.html' %}
+
+{% set user = getUser(user_id) %}
+
+{% block content %}
+<div class="social-profile-badge my-2">
+    <div class="avatar">
+        <img src="{{ user['avatar_url'] }}" alt="Avatar">
+    </div>
+    <div class="meta">
+        <h4>{{ user['full_name'] }}</h4>
+        <div class="labels">
+            <span class="label label-default">Друзей: 4</span>
+            <span class="label label-default">Групп: 16</span>
+        </div>
+        <div class="btn-group btn-group-xs" role="group" aria-label="...">
+            <button class="btn btn-primary">
+                В друзья
+            </button>
+        </div>
+    </div>
+</div>
+<h3>Посты</h3>
+{% endblock %}
