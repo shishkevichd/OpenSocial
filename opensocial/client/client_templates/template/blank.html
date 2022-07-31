@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OpenSocial</title>
 
-    <link rel="stylesheet" href="{{ url_for('MainClientAPI.static', filename='index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('MainClientAPI.static', filename='css/index.css') }}">
+
+    <script src="https://unpkg.com/vue@3"></script>
 </head>
 <body>
     <div class="social_application">
@@ -14,17 +16,21 @@
             <div class="container">
                 <div class="social_navbar_container">
                     <div class="social_navbar_left">
-                        <span class="social_navbar_header">
-                            OpenSocial
-                        </span>
+                        <a href="/" class="social_navbar_header">OpenSocial</a>
                     </div>
                     <ul class="social_navbar_right">
+                        {% if not isLogged() %}
                         <li class="navbar_icon">
                             <a href="/login"><span class="material-symbols-outlined">login</span> <span class="text">Войти</span></a>
                         </li>
                         <li class="navbar_icon">
                             <a href="/register"><span class="material-symbols-outlined">person_add</span> <span class="text">Регистрация</span></a>
                         </li>
+                        {% else %}
+                        <li class="navbar_icon">
+                            <a href="/logout"><span class="material-symbols-outlined">logout</span> <span class="text">Выйти</span></a>
+                        </li>
+                        {% endif %}
                     </il>
                 </div>
             </div>

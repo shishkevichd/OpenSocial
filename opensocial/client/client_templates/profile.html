@@ -1,9 +1,9 @@
-{% extends 'template/logged_template.html' %}
+{% extends 'template/with_tabs.html' %}
 
 {% set user = getUser(user_id) %}
 
-{% block content %}
-<div class="social-profile-badge my-2">
+{% block tab_content %}
+<div class="social-profile-badge">
     <div class="avatar">
         <img src="{{ user['avatar_url'] }}" alt="Avatar">
     </div>

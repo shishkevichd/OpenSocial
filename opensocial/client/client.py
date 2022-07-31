@@ -48,8 +48,20 @@ def context_processor():
     def getPostComp():
         from opensocial.api.accounts import Accounts
         return Accounts.getPostCompilation(session.get('account_data')['access_token'])
+
+    def isLogged():
+        from opensocial.api.accounts import Accounts
+        
+        if session.get('account_data') == None:
+            return False
+        else:
+            check_token = Accounts.isValidAccessToken(session.get('account_data')['access_token'])
+            if not check_token:
+                return False
+            else:
+                return True
     
-    return dict(getUser=getUser, getPostComp=getPostComp)
+    return dict(getUser=getUser, getPostComp=getPostComp, isLogged=isLogged)
 
 
 # ===================================

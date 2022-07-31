@@ -1,17 +1,35 @@
 {% macro user_post(arrayName="posts") -%}
 <div class="panel panel-default social_post" v-for="post in {{ arrayName }}">
     <div class="panel-heading" v-if="post.creator.creator_type == 'user'">
-        <div class="avatar">
-            <img :src="post.creator.data.avatar_url" alt="Avatar">
+        <div class="left">
+            <div class="avatar">
+                <img :src="post.creator.data.avatar_url" alt="Avatar">
+            </div>
+            <div class="meta">
+                <span>[[ post.creator.data.full_name ]]</span>
+                <span style="color: #a8a8a8;"> [[ post.create_datetime ]]</span>
+            </div>
         </div>
-        <div class="meta">
-            <span>[[ post.creator.data.full_name ]]</span>
-            <span style="color: #a8a8a8;"> [[ post.create_datetime ]]</span>
+        <div class="right">
+            <a class="post_icon" :href="`/post_edit/${post.post_id}`" v-if="post.creator.data.user_id == '{{ session['account_data']['user_id'] }}'"> 
+                <span class="material-symbols-outlined">
+                    edit
+                </span>
+            </a>
+            <a class="post_icon" :href="`/post_delete/${post.post_id}`" v-if="post.creator.data.user_id == '{{ session['account_data']['user_id'] }}'">
+                <span class="material-symbols-outlined">
+                    delete
+                </span>
+            </a>
         </div>
     </div>
     <div class="panel-heading" v-else>[[ post.creator.data.group_name ]] <span style="color: #a8a8a8;"> [[ post.create_datetime ]]</span></div>
     <div class="panel-body">
         [[ post.content ]]
+        <br />
+        <div class="btn-group btn-group-sm mt-1" style="float: right;">
+            <a href="#" class="btn btn-default" @click="likePost(post.post_id)">Понравилось</a>
+        </div>
     </div>
 </div>
 {%- endmacro %}

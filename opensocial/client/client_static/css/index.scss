@@ -25,8 +25,9 @@
     
             .social_navbar_left {
                 padding: 12px 0;
-                span.social_navbar_header {
+                a.social_navbar_header {
                     color: white;
+                    text-decoration: none;
                     font-weight: 600;
                 }
             }
@@ -75,47 +76,6 @@
     }
 }
 
-.social_mobile_icons {
-    background-color: #1d1d1d;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    list-style: none;
-    margin: 0;
-    padding: 10px 15px;
-    color: whitesmoke;
-
-    .mobile_icon {
-        display: flex;
-        text-align: center;
-        flex-direction: column;
-
-        .mobile_icon_subtext {
-            font-size: 9pt;
-            display: none;
-        }
-    }
-
-    @media screen and (min-width: 425px) {
-        & {
-            justify-content: space-evenly;
-
-            .mobile_icon {
-                .mobile_icon_subtext {
-                    margin-top: 2spx;
-                    display: block;
-                }
-            }
-        }
-    }
-
-    @media screen and (min-width: 767px) {
-        & {
-            display: none;
-        }
-    }
-}
-
 // Profile Badge
 .social-profile-badge {
     display: flex;
@@ -153,15 +113,33 @@
 .social_post {
     .panel-heading {
         display: flex;
+        justify-content: space-between;
+        align-items: center;
 
-        .avatar {
-            width: 40px;
-            margin-right: 13px;
+        .left {
+            display: flex;
+
+            .avatar {
+                width: 40px;
+                margin-right: 13px;
+            }
+    
+            .meta {
+                display: flex;
+                flex-direction: column;
+            }
         }
 
-        .meta {
-            display: flex;
-            flex-direction: column;
+        .right {
+            .post_icon {
+                margin-right: 15px;
+                color: #1d1d1d;
+                text-decoration: none;
+
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
         }
     }
 }

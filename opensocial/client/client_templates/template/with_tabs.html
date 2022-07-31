@@ -1,0 +1,21 @@
+{% extends 'template/blank.html' %}
+
+{% block content %}
+<div class="row my-2">
+    <div class="col-sm-4">
+        <ul class="nav nav-pills nav-stacked">
+            <li role="presentation"><a href="/user">Профиль</a></li>
+            <li role="presentation"><a href="/">Чат</a></li>
+            <li role="presentation"><a href="/">Новости</a></li>
+            <li role="presentation"><a href="/">Друзья</a></li>
+            <li role="presentation"><a href="/">Группы</a></li>
+            <li role="presentation"><a href="/">Заметки</a></li>
+            <li role="presentation"><a href="/">Видеозаписи</a></li>
+            <li role="presentation"><a href="/">Музыка</a></li>
+        </ul>
+    </div>
+    <div class="col-sm-8">
+        {% block tab_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

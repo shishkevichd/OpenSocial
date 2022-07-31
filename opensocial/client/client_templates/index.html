@@ -1,11 +1,11 @@
-{% extends 'template/logged_template.html' %}
-{% from "components/post.html" import user_post with context %}
+{% extends 'template/with_tabs.html' %}
 
+{% from "components/post.html" import user_post with context %}
 {% set currentUser = getUser() %}
 
-{% block content %}
+{% block tab_content %}
 <div id="social_posts">
-    <div class="form-group my-2">
+    <div class="form-group">
         <div class="input-group">
             <input type="text" class="form-control" placeholder="Что нового?" v-model="newPost.content">
             <span class="input-group-btn">
@@ -51,23 +51,10 @@
                     })
             },
             createNewPost() {
-                fetch(window.location.origin + '/api/users/createPost', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        access_token: "{{ session['account_data']['access_token'] }}",
-                        content: this.newPost.content
-                    }),
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data['success']) {
-                            this.newPost.content = ""
-                            this.loadingPostCompilation()
-                        }
-                    })
+                // TODO
+            },
+            likePost(post_id) {
+                window.alert(post_id)
             }
         }
     }).mount('#social_posts')
